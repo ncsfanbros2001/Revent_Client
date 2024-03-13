@@ -18,11 +18,6 @@ const Login = () => {
         password: ''
     }
 
-    const validationSchema = Yup.object().shape({
-        email: Yup.string().email('Email không hợp lệ').required('Cần nhập email'),
-        password: Yup.string().required('Cần nhập mật khẩu')
-    })
-
 
     return (
         <Container id='content_container'>
@@ -44,7 +39,7 @@ const Login = () => {
                                 color="blue"
                                 className="formHeader" />
 
-                            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+                            <Formik initialValues={initialValues} onSubmit={onSubmit}>
                                 {() => (
                                     <Form>
                                         <TextInput
