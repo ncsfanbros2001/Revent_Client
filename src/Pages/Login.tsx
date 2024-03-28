@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { Container, Grid, Header, Segment, Divider, Button } from 'semantic-ui-react';
 import '../Stylesheets/Login&Register.css'
 import TextInput from '../FormikControls/TextInput';
-import RegisterModal from '../Components/RegisterModal';
+import RegisterModal from '../Components/Authenticate/RegisterModal';
 import '../Stylesheets/Formik.css'
 
 const Login = () => {

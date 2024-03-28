@@ -2,10 +2,10 @@ import { Fragment, useState } from "react"
 import { Button, Grid, Modal } from "semantic-ui-react"
 import { Form, Formik } from "formik"
 import * as Yup from 'yup'
-import TextInput from "../FormikControls/TextInput"
-import DatePicker from "../FormikControls/DatePicker"
-import Dropdown from "../FormikControls/Dropdown"
-// Git testing
+import TextInput from "../../FormikControls/TextInput"
+import DatePicker from "../../FormikControls/DatePicker"
+import Dropdown from "../../FormikControls/Dropdown"
+
 const RegisterModal = () => {
     const [openRegister, setOpenRegister] = useState(false)
 
@@ -20,7 +20,9 @@ const RegisterModal = () => {
         lastName: '',
         email: '',
         birthDate: null,
-        gender: ''
+        gender: '',
+        password: '',
+        confirmPassword: ''
     }
 
     const registerValidationSchema = Yup.object({
@@ -107,6 +109,24 @@ const RegisterModal = () => {
                                                     headerLabel='Giới tính'
                                                     name='gender'
                                                     options={genderOptions}
+                                                    stylingClass='registerInputField' />
+                                            </Grid.Column>
+                                        </Grid.Row>
+
+                                        <Grid.Row>
+                                            <Grid.Column width={8}>
+                                                <TextInput
+                                                    headerLabel='Mật khẩu'
+                                                    type='password'
+                                                    name='password'
+                                                    stylingClass='registerInputField' />
+                                            </Grid.Column>
+
+                                            <Grid.Column width={8}>
+                                                <TextInput
+                                                    headerLabel='Nhập lại mật khẩu'
+                                                    type='password'
+                                                    name='confirmPassword'
                                                     stylingClass='registerInputField' />
                                             </Grid.Column>
                                         </Grid.Row>
