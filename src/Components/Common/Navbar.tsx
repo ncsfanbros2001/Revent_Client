@@ -1,28 +1,28 @@
 import { Button, Container, Menu } from "semantic-ui-react";
+import { observer } from "mobx-react-lite";
+import { NavLink } from "react-router-dom";
+import { useStore } from "../../Stores/store";
+import EventForm from "../Form/EventForm";
 
-interface Props {
-    handleFormOpen: (eventId?: string) => void
-}
-
-const Navbar = (props: Props) => {
-    const { handleFormOpen } = props
+const Navbar = () => {
+    const { modalStore } = useStore();
+    const { openModal } = modalStore
 
     return (
         <Menu inverted fixed="top">
             <Container>
-                <Menu.Item header>
+                <Menu.Item as={NavLink} to='/' header>
                     <img src="/logo.png" alt="logo" style={{ marginRight: 8 }} /> Revent
                 </Menu.Item>
 
-                <Menu.Item name="Newsfeed" />
-                <Menu.Item name="Notifications" />
+                <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
                 <Menu.Item>
-                    <Button color="green" content="Create Activity" onClick={() => handleFormOpen()} />
+                    <Button color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
                 </Menu.Item>
             </Container>
         </Menu>
     );
 };
 
-export default Navbar;
+export default observer(Navbar);

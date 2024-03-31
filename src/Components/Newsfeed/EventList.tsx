@@ -1,18 +1,25 @@
 import { Button, Item, Label, Segment } from "semantic-ui-react"
 import { Events } from "../../Interfaces/event"
+import { SyntheticEvent, useState } from "react"
+import { useStore } from "../../Stores/store"
+import { observer } from "mobx-react-lite"
+import { Link } from "react-router-dom"
 
-interface Props {
-    events: Events[]
-    handleSelectEvent: (eventId: string) => void
-}
+const EventList = () => {
+    const [target, setTarget] = useState<string>("");
 
-const EventList = (props: Props) => {
-    const { events, handleSelectEvent } = props
+    const { eventStore } = useStore();
+    const { eventsByDate, deleteEvent, loading } = eventStore
 
+
+    const handleDeleting = (event: SyntheticEvent<HTMLButtonElement>, eventId: string) => {
+        setTarget(event.currentTarget.name)
+        deleteEvent(eventId)
+    }
     return (
         <Segment>
             <Item.Group divided>
-                {events.map((event: Events) => (
+                {eventsByDate.map((event: Events) => (
                     <Item key={event.eventID}>
                         <Item.Content>
                             <Item.Header as='a'>{event.title}</Item.Header>
@@ -25,10 +32,19 @@ const EventList = (props: Props) => {
 
                             <Item.Extra>
                                 <Button
+                                    name={event.eventID}
+                                    floated="right"
+                                    content='Delete'
+                                    color="red"
+                                    loading={loading && target === event.eventID}
+                                    onClick={(e) => handleDeleting(e, event.eventID)} />
+
+                                <Button
+                                    as={Link}
+                                    to={`/details/${event.eventID}`}
                                     floated="right"
                                     content='View'
-                                    color="blue"
-                                    onClick={() => handleSelectEvent(event.eventID)} />
+                                    color="blue" />
 
                                 <Label
                                     basic
@@ -42,4 +58,4 @@ const EventList = (props: Props) => {
     )
 }
 
-export default EventList
+export default observer(EventList)

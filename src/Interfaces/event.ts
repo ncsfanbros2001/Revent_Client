@@ -13,4 +13,3 @@ export interface Events {
     createdTime: string
     updatedAt: string
 }
-  

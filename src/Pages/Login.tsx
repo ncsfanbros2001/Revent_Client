@@ -1,9 +1,8 @@
 import { Form, Formik } from 'formik';
-import * as Yup from 'yup'
 import { Container, Grid, Header, Segment, Divider, Button } from 'semantic-ui-react';
 import '../Stylesheets/Login&Register.css'
 import TextInput from '../FormikControls/TextInput';
-import RegisterModal from '../Components/Authenticate/RegisterModal';
+import RegisterModal from '../Components/Form/RegisterModal';
 import '../Stylesheets/Formik.css'
 
 const Login = () => {

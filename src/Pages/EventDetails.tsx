@@ -1,15 +1,26 @@
 import { Button, Card } from 'semantic-ui-react'
-import { Events } from '../Interfaces/event'
+import { useStore } from '../Stores/store';
+import LoadingComponent from '../Components/Common/LoadingComponent';
+import { observer } from 'mobx-react-lite';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import EventForm from '../Components/Form/EventForm';
 
-interface Props {
-    selectedEvent: Events
-    handleCancelSelectedEvent: () => void
-    handleFormOpen: (eventId?: string) => void
-    handleFormClose: () => void
-}
+const EventDetails = () => {
+    const { eventStore, modalStore } = useStore();
+    const { selectedEvent, loadOneEvent, loadingInitial } = eventStore
+    const { openModal } = modalStore
+    const navigate = useNavigate()
 
-const EventDetails = (props: Props) => {
-    const { selectedEvent, handleCancelSelectedEvent, handleFormOpen, handleFormClose } = props
+    const { eventID } = useParams()
+
+    useEffect(() => {
+        if (eventID) {
+            loadOneEvent(eventID)
+        }
+    }, [eventID, loadOneEvent])
+
+    if (!selectedEvent || loadingInitial) return <LoadingComponent /> // Not gonna happen 
 
     return (
         <Card fluid>
@@ -24,15 +35,13 @@ const EventDetails = (props: Props) => {
             </Card.Content>
             <Card.Content extra>
                 <Button.Group widths={2}>
-                    <Button basic color='blue' content='Edit' onClick={() => handleFormOpen(selectedEvent.eventID)} />
-                    <Button basic color='grey' content='Cancel' onClick={() => {
-                        handleFormClose()
-                        handleCancelSelectedEvent()
-                    }} />
+                    <Button basic color='blue' content='Edit'
+                        onClick={() => openModal(<EventForm selectedEvent={selectedEvent} />)} />
+                    <Button basic color='grey' content='Cancel' onClick={() => navigate(-1)} />
                 </Button.Group>
             </Card.Content>
         </Card>
     )
 }
 
-export default EventDetails
+export default observer(EventDetails)
