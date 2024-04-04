@@ -5,6 +5,7 @@ import EventList from "../Components/Newsfeed/EventList";
 import { useStore } from "../Stores/store";
 import { observer } from "mobx-react-lite";
 import LoadingComponent from "../Components/Common/LoadingComponent";
+import EventFilter from "../Components/Newsfeed/EventFilter";
 
 const Newsfeed = () => {
     const { eventStore } = useStore()
@@ -29,7 +30,7 @@ const Newsfeed = () => {
             </Grid.Column>
 
             <Grid.Column width={6}>
-                <h2>Activity filters</h2>
+                <EventFilter />
             </Grid.Column>
         </Grid>
     );

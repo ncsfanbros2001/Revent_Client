@@ -6,10 +6,10 @@ export interface Events {
     beginTime: string
     endTime: string
     category: string
-    status: string
+    status?: string
     description: string
     publicity: string
     attendDeadline: string
-    createdTime: string
-    updatedAt: string
+    createdTime?: string
+    updatedAt?: string
 }

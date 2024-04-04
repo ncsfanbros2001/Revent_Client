@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
+import { v4 as uuid } from "uuid"
 
 export default class EventStore {
     eventListRegistry = new Map<string, Events>(); //<key: id of an event, value: the event itself>
@@ -28,13 +29,23 @@ export default class EventStore {
             .sort((a, b) => Date.parse(a.beginTime) - Date.parse(b.beginTime))
     }
 
+    get groupedEvents() {
+        return Object.entries(
+            this.eventsByDate.reduce((eventList, event) => {
+                const date = event.beginTime
+                eventList[date] = eventList[date] ? [...eventList[date], event] : [event]
+                return eventList
+            }, {} as { [key: string]: Events[] })
+        )
+    }
+
 
     private getEvent = (eventID: string) => {
         return this.eventListRegistry.get(eventID)
     }
 
 
-    private setActivity = (event: Events) => {
+    private setEvent = (event: Events) => {
         event.beginTime = event.beginTime.split('T')[0];
         event.endTime = event.endTime.split('T')[0];
         event.attendDeadline = event.attendDeadline.split('T')[0];
@@ -51,13 +62,13 @@ export default class EventStore {
             const events = await axiosAgent.EventActions.getAllEvents()
 
             events.forEach((event) => {
-                this.setActivity(event)
+                this.setEvent(event)
             });
-
-            this.setLoadingInitial(false)
         }
         catch (error) {
             console.log(error)
+        }
+        finally {
             this.setLoadingInitial(false)
         }
     }
@@ -72,12 +83,12 @@ export default class EventStore {
             this.setLoadingInitial(true)
             try {
                 event = await axiosAgent.EventActions.getOneEvent(eventID)
-                this.setActivity(event)
+                this.setEvent(event)
                 this.setSelectedEvent(event)
-
-                this.setLoadingInitial(false)
             } catch (error) {
                 console.log(error);
+            }
+            finally {
                 this.setLoadingInitial(false)
             }
         }
@@ -86,50 +97,43 @@ export default class EventStore {
 
     createEvent = async (event: Events) => {
         this.setLoadingInitial(true)
-        this.loading = true
 
         try {
+            event.eventID = uuid();
+            event.createdTime = undefined
+            event.updatedAt = undefined
+
             await axiosAgent.EventActions.createEvent(event)
 
             runInAction(() => {
-                this.eventListRegistry.set(event.eventID, event)
-                this.setSelectedEvent(event)
-
-                this.loading = false
-                this.setLoadingInitial(false)
+                this.setEvent(event)
             })
         }
         catch (error) {
             console.log("Create event failed", error)
-            runInAction(() => {
-                this.loading = false
-                this.setLoadingInitial(false)
-            })
+        }
+        finally {
+            this.setLoadingInitial(false)
         }
     }
 
 
     updateEvent = async (event: Events) => {
         this.setLoadingInitial(true)
-        this.loading = true
 
         try {
             await axiosAgent.EventActions.updateEvent(event)
 
             runInAction(() => {
-                this.eventListRegistry.set(event.eventID, event)
+                this.setEvent(event)
                 this.setSelectedEvent(event)
-
-                this.loading = false
-                this.setLoadingInitial(false)
             })
         }
         catch (error) {
             console.log("Update event failed", error)
-            runInAction(() => {
-                this.loading = false
-                this.setLoadingInitial(false)
-            })
+        }
+        finally {
+            this.setLoadingInitial(false)
         }
     }
 
@@ -142,11 +146,12 @@ export default class EventStore {
 
             runInAction(() => {
                 this.eventListRegistry.delete(eventID)
-                this.loading = false
             })
         }
         catch (error) {
             console.log("Delete event failed", error)
+        }
+        finally {
             runInAction(() => {
                 this.loading = false
             })

@@ -1,17 +1,18 @@
-import { Button, Card } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import { useStore } from '../Stores/store';
 import LoadingComponent from '../Components/Common/LoadingComponent';
 import { observer } from 'mobx-react-lite';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import EventForm from '../Components/Form/EventForm';
+import EventDetailHeader from '../Components/Details/EventDetailHeader';
+import EventDetailInfo from '../Components/Details/EventDetailInfo';
+import EventDetailComment from '../Components/Details/EventDetailComment';
+import EventDetailGuestList from '../Components/Details/EventDetailGuestList';
+
 
 const EventDetails = () => {
-    const { eventStore, modalStore } = useStore();
+    const { eventStore } = useStore();
     const { selectedEvent, loadOneEvent, loadingInitial } = eventStore
-    const { openModal } = modalStore
-    const navigate = useNavigate()
-
     const { eventID } = useParams()
 
     useEffect(() => {
@@ -23,24 +24,17 @@ const EventDetails = () => {
     if (!selectedEvent || loadingInitial) return <LoadingComponent /> // Not gonna happen 
 
     return (
-        <Card fluid>
-            <Card.Content>
-                <Card.Header>{selectedEvent.title}</Card.Header>
-                <Card.Meta>
-                    <span>{selectedEvent.beginTime}</span>
-                </Card.Meta>
-                <Card.Description>
-                    {selectedEvent.description}
-                </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-                <Button.Group widths={2}>
-                    <Button basic color='blue' content='Edit'
-                        onClick={() => openModal(<EventForm selectedEvent={selectedEvent} />)} />
-                    <Button basic color='grey' content='Cancel' onClick={() => navigate(-1)} />
-                </Button.Group>
-            </Card.Content>
-        </Card>
+        <Grid>
+            <Grid.Column width={10}>
+                <EventDetailHeader event={selectedEvent} />
+                <EventDetailInfo event={selectedEvent} />
+                <EventDetailComment />
+            </Grid.Column>
+
+            <Grid.Column width={6}>
+                <EventDetailGuestList />
+            </Grid.Column>
+        </Grid>
     )
 }
 

@@ -17,6 +17,8 @@ const Navbar = () => {
 
                 <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
+                <Menu.Item name="Errors" as={NavLink} to='/errors' />
+
                 <Menu.Item>
                     <Button color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
                 </Menu.Item>
