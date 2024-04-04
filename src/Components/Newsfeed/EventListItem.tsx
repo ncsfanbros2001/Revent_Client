@@ -2,6 +2,7 @@ import { Button, Icon, Item, Segment } from "semantic-ui-react"
 import { Events } from "../../Interfaces/event"
 import { useStore } from "../../Stores/store"
 import { Link } from "react-router-dom"
+import { format } from "date-fns"
 
 interface Props {
     event: Events
@@ -30,7 +31,7 @@ const EventListItem = ({ event }: Props) => {
             </Segment>
 
             <Segment>
-                <Icon name="clock" /> {event.beginTime}
+                <Icon name="clock" /> {format(event.beginTime!, 'dd MMM yyyy h:mm aa')}
                 <br />
                 <Icon name="marker" /> {event.location}
             </Segment>

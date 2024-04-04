@@ -3,13 +3,13 @@ export interface Events {
     title: string
     wallpaper: string
     location: string
-    beginTime: string
-    endTime: string
+    beginTime: Date | null
+    endTime: Date | null
     category: string
-    status?: string
+    status: string
     description: string
     publicity: string
-    attendDeadline: string
-    createdTime?: string
-    updatedAt?: string
+    attendDeadline: Date | null
+    createdTime: Date | null
+    updatedAt: Date | null
 }

@@ -3,6 +3,7 @@ import { Button, Header, Item, Segment, Image } from "semantic-ui-react";
 import { Events } from "../../Interfaces/event";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
+import { format } from "date-fns";
 
 const eventImageStyle = {
     filter: 'brightness(50%)'
@@ -35,7 +36,7 @@ const EventDetailHeader = ({ event }: Props) => {
                         <Item>
                             <Item.Content>
                                 <Header size='huge' content={event.title} style={{ color: 'white' }} />
-                                <p>{event.beginTime}</p>
+                                <p>{format(event.beginTime!, 'dd MMM yyyy h:mm aa')}</p>
                                 <p>
                                     Hosted by <strong>Inscifer</strong>
                                 </p>

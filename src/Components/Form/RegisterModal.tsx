@@ -1,10 +1,6 @@
-import { Fragment, useState } from "react"
-import { Button, Grid, Modal } from "semantic-ui-react"
-import { Form, Formik } from "formik"
+import { useState } from "react"
+import { Button, Modal } from "semantic-ui-react"
 import * as Yup from 'yup'
-import TextInput from "../../FormikControls/TextInput"
-import DatePicker from "../../FormikControls/DatePicker"
-import Dropdown from "../../FormikControls/Dropdown"
 
 const RegisterModal = () => {
     const [openRegister, setOpenRegister] = useState(false)
@@ -57,7 +53,7 @@ const RegisterModal = () => {
             }
         >
 
-            <Formik
+            {/* <Formik
                 initialValues={registerInitialValues}
                 validationSchema={registerValidationSchema}
                 onSubmit={onSubmit}
@@ -157,7 +153,7 @@ const RegisterModal = () => {
                         </Fragment>
                     )
                 }
-            </Formik>
+            </Formik> */}
         </Modal>
     )
 }

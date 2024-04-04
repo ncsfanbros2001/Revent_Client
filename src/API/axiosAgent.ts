@@ -73,7 +73,7 @@ const EventActions = {
         return request.post<void>(`/Event`, event)
     },
     updateEvent: (event: Events) => {
-        return request.put<void>(`/Event/${event.eventID}`, event)
+        return request.put<void>(`/Event`, event)
     },
     deleteEvent: (eventId: string) => {
         return request.delete<void>(`/Event/${eventId}`)

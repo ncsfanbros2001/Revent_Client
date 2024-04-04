@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import { Container, Grid, Header, Segment, Divider, Button } from 'semantic-ui-react';
 import '../Stylesheets/Login&Register.css'
-import TextInput from '../FormikControls/TextInput';
+import TextInput from '../Components/FormikControls/TextInput';
 import RegisterModal from '../Components/Form/RegisterModal';
 import '../Stylesheets/Formik.css'
 
@@ -41,7 +41,7 @@ const Login = () => {
                             <Formik initialValues={initialValues} onSubmit={onSubmit}>
                                 {() => (
                                     <Form>
-                                        <TextInput
+                                        {/* <TextInput
                                             headerLabel='Email'
                                             name='email'
                                             stylingClass='loginInputField' />
@@ -50,7 +50,7 @@ const Login = () => {
                                             headerLabel='Mật khẩu'
                                             name='password'
                                             stylingClass='loginInputField'
-                                            type='password' />
+                                            type='password' /> */}
 
                                         <Button type='submit' className='buttonControls' color='green' content='Đăng Nhập' />
                                         <Button className='buttonControls' color='grey' content='Quên Mật Khẩu' />

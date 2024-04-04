@@ -1,9 +1,16 @@
-import { Button, Form, Segment } from "semantic-ui-react"
-import { ChangeEvent, useEffect, useState } from "react"
+import { Button, Segment } from "semantic-ui-react"
+import { useEffect, useState } from "react"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
 import { Events } from "../../Interfaces/event"
 import LoadingComponent from "../Common/LoadingComponent"
+import { Formik, Form } from "formik"
+import * as Yup from 'yup'
+import TextInput from "../FormikControls/TextInput"
+import SelectInput from "../FormikControls/SelectInput"
+import { eventCategoryOptions } from "../../Utilities/eventCategoryOptions"
+import DateInput from "../FormikControls/DateInput"
+import TextAreaInput from "../FormikControls/TextAreaInput"
 
 interface Props {
     selectedEvent?: Events
@@ -20,15 +27,27 @@ const EventForm = (props: Props) => {
         title: '',
         wallpaper: '',
         location: '',
-        beginTime: '',
-        endTime: '',
+        beginTime: null,
+        endTime: null,
         category: '',
         status: '',
         description: '',
         publicity: '',
-        attendDeadline: '',
-        createdTime: '',
-        updatedAt: '',
+        attendDeadline: null,
+        createdTime: null,
+        updatedAt: null,
+    })
+
+    const validationSchema = Yup.object({
+        title: Yup.string().required('Title is required'),
+        wallpaper: Yup.string().required('Wallpaper is required'),
+        location: Yup.string().required('Location is required'),
+        beginTime: Yup.string().required('Begin Time is required'),
+        endTime: Yup.string().required('End Time is required'),
+        category: Yup.string().required('Category is required'),
+        description: Yup.string().required('Description is required'),
+        publicity: Yup.string().required('Publicity is required'),
+        attendDeadline: Yup.string().required('AttendDeadline is required')
     })
 
     useEffect(() => {
@@ -37,85 +56,87 @@ const EventForm = (props: Props) => {
         }
     }, [selectedEvent, loadOneEvent])
 
-    const handleSubmit = () => {
-        selectedEvent ? updateEvent(eventInfo) : createEvent(eventInfo);
+    const handleFormSubmit = (event: Events) => {
+        selectedEvent ? updateEvent(event) : createEvent(event);
         closeModal()
-    }
-
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = event.target;
-
-        setEventInfo({
-            ...eventInfo,
-            [name]: value // Specify whatever field has this name should equal to the value inside that input
-        })
     }
 
     if (loadingInitial) return <LoadingComponent content="Loading Actiity..." />
 
     return (
         <Segment clearing>
-            <Form onSubmit={handleSubmit} autoComplete='off'>
-                <Form.Input
-                    placeholder="Title"
-                    value={eventInfo.title}
-                    name='title'
-                    onChange={handleInputChange} />
+            <Formik
+                enableReinitialize
+                initialValues={eventInfo}
+                onSubmit={values => handleFormSubmit(values)}
+                validationSchema={validationSchema}>
+                {
+                    ({ handleSubmit, isValid, isSubmitting, dirty }) => (
+                        <Form className="ui form" onSubmit={handleSubmit} autoComplete='off'>
+                            <TextInput
+                                name='title'
+                                placeholder='Title' />
 
-                <Form.Input
-                    placeholder="Wallpaper"
-                    value={eventInfo.wallpaper}
-                    name='wallpaper'
-                    onChange={handleInputChange} />
+                            <TextInput
+                                name='wallpaper'
+                                placeholder='Wallpaper' />
 
-                <Form.Input
-                    placeholder="Location"
-                    value={eventInfo.location}
-                    name='location'
-                    onChange={handleInputChange} />
+                            <TextInput
+                                name='location'
+                                placeholder='Location' />
 
-                <Form.Input
-                    placeholder="Begin Time"
-                    value={eventInfo.beginTime}
-                    name='beginTime'
-                    type="date"
-                    onChange={handleInputChange} />
+                            <DateInput
+                                name='beginTime'
+                                placeholderText='Begin Time'
+                                showTimeSelect
+                                timeCaption='time'
+                                dateFormat='MMMM d, yyyy h:mm aa' />
 
-                <Form.Input
-                    placeholder="End Time"
-                    value={eventInfo.endTime}
-                    name='endTime'
-                    type="date"
-                    onChange={handleInputChange} />
+                            <DateInput
+                                name='endTime'
+                                placeholderText='End Time'
+                                showTimeSelect
+                                timeCaption='time'
+                                dateFormat='MMMM d, yyyy h:mm aa' />
 
-                <Form.Input
-                    placeholder="Category"
-                    value={eventInfo.category}
-                    name='category'
-                    onChange={handleInputChange} />
+                            <SelectInput
+                                name='category'
+                                placeholder='Category'
+                                options={eventCategoryOptions} />
 
-                <Form.TextArea
-                    placeholder="Description"
-                    value={eventInfo.description}
-                    name='description'
-                    onChange={handleInputChange} />
+                            <TextAreaInput
+                                name='description'
+                                placeholder='Description'
+                                rows={5} />
 
-                <Form.Input
-                    placeholder="Publictiy"
-                    value={eventInfo.publicity}
-                    name='publicity'
-                    onChange={handleInputChange} />
+                            <TextInput
+                                name='publicity'
+                                placeholder='Publictiy' />
 
-                <Form.Input
-                    placeholder="Attend Deadline"
-                    value={eventInfo.attendDeadline}
-                    name='attendDeadline'
-                    type="date"
-                    onChange={handleInputChange} />
+                            <DateInput
+                                name='attendDeadline'
+                                placeholderText='Attend Deadline'
+                                showTimeSelect
+                                timeCaption='time'
+                                dateFormat='MMMM d, yyyy h:mm aa' />
 
-                <Button loading={loading} floated="right" positive type="submit" content='Submit' />
-                <Button floated="right" type="button" content='Cancel' onClick={() => closeModal()} />
-            </Form>
+
+
+                            <Button
+                                disabled={isSubmitting || !dirty || !isValid}
+                                loading={loading}
+                                floated="right"
+                                positive type="submit"
+                                content='Submit' />
+                            <Button
+                                floated="right"
+                                type="button"
+                                content='Cancel'
+                                onClick={() => closeModal()} />
+                        </Form>
+                    )
+                }
+            </Formik>
         </Segment>
     )
 }
