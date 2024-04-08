@@ -1,12 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { Events } from "../Interfaces/event";
+import { EventsModel } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
 import { v4 as uuid } from "uuid"
 import { format } from "date-fns";
 
 export default class EventStore {
-    eventListRegistry = new Map<string, Events>(); //<key: id of an event, value: the event itself>
-    selectedEvent: Events | undefined = undefined;
+    eventListRegistry = new Map<string, EventsModel>(); //<key: id of an event, value: the event itself>
+    selectedEvent: EventsModel | undefined = undefined;
     loading = false;
     loadingInitial = false
 
@@ -20,7 +20,7 @@ export default class EventStore {
     }
 
 
-    setSelectedEvent = (event: Events | undefined) => {
+    setSelectedEvent = (event: EventsModel | undefined) => {
         this.selectedEvent = event
     }
 
@@ -36,7 +36,7 @@ export default class EventStore {
                 const date = format(event.beginTime!, 'dd MMM yyyy')
                 eventList[date] = eventList[date] ? [...eventList[date], event] : [event]
                 return eventList
-            }, {} as { [key: string]: Events[] })
+            }, {} as { [key: string]: EventsModel[] })
         )
     }
 
@@ -46,7 +46,7 @@ export default class EventStore {
     }
 
 
-    private setEvent = (event: Events) => {
+    private setEvent = (event: EventsModel) => {
         event.beginTime = new Date(event.beginTime!);
         event.endTime = new Date(event.endTime!);
         event.attendDeadline = new Date(event.attendDeadline!);
@@ -96,7 +96,7 @@ export default class EventStore {
     }
 
 
-    createEvent = async (event: Events) => {
+    createEvent = async (event: EventsModel) => {
         this.setLoadingInitial(true)
 
         try {
@@ -120,7 +120,7 @@ export default class EventStore {
     }
 
 
-    updateEvent = async (event: Events) => {
+    updateEvent = async (event: EventsModel) => {
         this.setLoadingInitial(true)
 
         try {

@@ -1,4 +1,4 @@
-export interface Events {
+export interface EventsModel {
     eventID: string
     title: string
     wallpaper: string

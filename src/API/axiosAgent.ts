@@ -1,8 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Events } from "../Interfaces/event";
+import { EventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
+import { LoginModel, RegisterModel, UserModel } from "../Interfaces/user";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -64,15 +65,15 @@ const request = {
 
 const EventActions = {
     getAllEvents: () => {
-        return request.get<Events[]>(`/Event`)
+        return request.get<EventsModel[]>(`/Event`)
     },
     getOneEvent: (eventId: string) => {
-        return request.get<Events>(`/Event/${eventId}`)
+        return request.get<EventsModel>(`/Event/${eventId}`)
     },
-    createEvent: (event: Events) => {
+    createEvent: (event: EventsModel) => {
         return request.post<void>(`/Event`, event)
     },
-    updateEvent: (event: Events) => {
+    updateEvent: (event: EventsModel) => {
         return request.put<void>(`/Event`, event)
     },
     deleteEvent: (eventId: string) => {
@@ -80,8 +81,20 @@ const EventActions = {
     },
 }
 
+const AccountActions = {
+    getCurrentUser: (userID: string) => {
+        return request.get<UserModel>(`/account/${userID}`)
+    },
+    login: (loginInfo: LoginModel) => {
+        return request.post<UserModel>('/account/login', loginInfo)
+    },
+    register: (registerInfo: RegisterModel) => {
+        return request.post<UserModel>('/account/register', registerInfo)
+    }
+}
+
 const axiosAgent = {
-    EventActions
+    EventActions, AccountActions
 }
 
 export default axiosAgent;

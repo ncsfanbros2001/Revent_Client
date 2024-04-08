@@ -2,27 +2,27 @@ import { Button, Segment } from "semantic-ui-react"
 import { useEffect, useState } from "react"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
-import { Events } from "../../Interfaces/event"
+import { EventsModel } from "../../Interfaces/event"
 import LoadingComponent from "../Common/LoadingComponent"
 import { Formik, Form } from "formik"
 import * as Yup from 'yup'
 import TextInput from "../FormikControls/TextInput"
 import SelectInput from "../FormikControls/SelectInput"
-import { eventCategoryOptions } from "../../Utilities/eventCategoryOptions"
+import { eventCategoryOptions } from "../../Utilities/dropdownOptions"
 import DateInput from "../FormikControls/DateInput"
 import TextAreaInput from "../FormikControls/TextAreaInput"
 
 interface Props {
-    selectedEvent?: Events
+    selectedEvent?: EventsModel
 }
 
 const EventForm = (props: Props) => {
     const { eventStore, modalStore } = useStore()
     const { closeModal } = modalStore
-    const { createEvent, updateEvent, loading, loadOneEvent, loadingInitial } = eventStore
+    const { createEvent, updateEvent, loading, loadingInitial } = eventStore
     const { selectedEvent } = props
 
-    const [eventInfo, setEventInfo] = useState<Events>({
+    const [eventInfo, setEventInfo] = useState<EventsModel>({
         eventID: '',
         title: '',
         wallpaper: '',
@@ -54,19 +54,19 @@ const EventForm = (props: Props) => {
         if (selectedEvent) {
             setEventInfo(selectedEvent)
         }
-    }, [selectedEvent, loadOneEvent])
+    }, [selectedEvent])
 
-    const handleFormSubmit = (event: Events) => {
+    const handleFormSubmit = (event: EventsModel) => {
         selectedEvent ? updateEvent(event) : createEvent(event);
         closeModal()
     }
 
-    if (loadingInitial) return <LoadingComponent content="Loading Actiity..." />
+    if (loadingInitial) return <LoadingComponent content="Loading Event..." />
 
     return (
         <Segment clearing>
             <Formik
-                enableReinitialize
+                enableReinitialize={true}
                 initialValues={eventInfo}
                 onSubmit={values => handleFormSubmit(values)}
                 validationSchema={validationSchema}>

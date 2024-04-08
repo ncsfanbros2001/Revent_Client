@@ -1,6 +1,6 @@
 const ErrorText = ({ error }: any) => {
     return (
-        <div style={{ color: 'red' }}>{error}</div>
+        <div style={{ color: 'red', marginTop: 5 }}>{error}</div>
     )
 }
 

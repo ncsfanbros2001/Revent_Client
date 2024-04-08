@@ -3,5 +3,10 @@ export const eventCategoryOptions = [
     { text: "Movie", value: "movie" },
     { text: "Culture", value: "culture" },
     { text: "Works", value: "works" },
-    { text: "Tourism", value: "tourism" },
+    { text: "Gaming", value: "Gaming" },
+]
+
+export const genderOptions = [
+    { text: "Male", value: "male" },
+    { text: "Female", value: "female" }
 ]

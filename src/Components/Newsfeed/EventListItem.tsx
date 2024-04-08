@@ -1,11 +1,11 @@
 import { Button, Icon, Item, Segment } from "semantic-ui-react"
-import { Events } from "../../Interfaces/event"
+import { EventsModel } from "../../Interfaces/event"
 import { useStore } from "../../Stores/store"
 import { Link } from "react-router-dom"
 import { format } from "date-fns"
 
 interface Props {
-    event: Events
+    event: EventsModel
 }
 
 const EventListItem = ({ event }: Props) => {

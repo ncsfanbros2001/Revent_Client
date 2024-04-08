@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
 import { Button, Header, Item, Segment, Image } from "semantic-ui-react";
-import { Events } from "../../Interfaces/event";
+import { EventsModel } from "../../Interfaces/event";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
 import { format } from "date-fns";
 
 const eventImageStyle = {
-    filter: 'brightness(50%)'
+    filter: 'brightness(80%)'
 };
 
 const eventImageTextStyle = {
@@ -19,7 +19,7 @@ const eventImageTextStyle = {
 };
 
 interface Props {
-    event: Events
+    event: EventsModel
 }
 
 const EventDetailHeader = ({ event }: Props) => {
@@ -46,7 +46,7 @@ const EventDetailHeader = ({ event }: Props) => {
                 </Segment>
             </Segment>
             <Segment clearing attached='bottom'>
-                <Button color='teal'>Join Activity</Button>
+                <Button color='teal'>Join Event</Button>
                 <Button>Cancel attendance</Button>
                 <Button color='orange' floated='right' onClick={() => openModal(<EventForm selectedEvent={selectedEvent} />)}>
                     Manage Event
