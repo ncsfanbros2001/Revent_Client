@@ -26,6 +26,7 @@ const RegisterForm = () => {
                 initialValues={
                     {
                         fullname: '',
+                        username: '',
                         email: '',
                         phoneNumber: '',
                         gender: '',
@@ -40,12 +41,13 @@ const RegisterForm = () => {
                     async (values, { setErrors }) => {
                         return await userStore.register(values)
                             .then(() => modalStore.closeModal())
-                            .catch(() => setErrors({ error: "Invalid credentials" }))
+                            .catch(() => setErrors({ error: "Invalid register infos" }))
 
                     }
                 }
                 validationSchema={Yup.object({
                     fullname: Yup.string().required('Full name is required'),
+                    username: Yup.string().required('Username is required'),
                     email: Yup.string().email('Invalid Email Format').required('Email is required'),
                     phoneNumber: Yup.number().required('Phone number is required'),
                     gender: Yup.string().required('Gender is required'),
@@ -61,6 +63,10 @@ const RegisterForm = () => {
                         <TextInput
                             name='fullname'
                             placeholder='Full Name' />
+
+                        <TextInput
+                            name='username'
+                            placeholder='Username' />
 
                         <TextInput
                             name='email'

@@ -1,9 +1,10 @@
 import { Grid, Icon, Segment } from "semantic-ui-react"
-import { Events } from "../../Interfaces/event"
+import { EventsModel } from "../../Interfaces/event"
 import { format } from "date-fns"
+import { observer } from "mobx-react-lite"
 
 interface Props {
-    event: Events
+    event: EventsModel
 }
 
 const EventDetailInfo = ({ event }: Props) => {
@@ -43,4 +44,4 @@ const EventDetailInfo = ({ event }: Props) => {
     )
 }
 
-export default EventDetailInfo
+export default observer(EventDetailInfo)

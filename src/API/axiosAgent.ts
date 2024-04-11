@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { EventsModel } from "../Interfaces/event";
+import { EventsModel, UpsertEventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
@@ -12,6 +12,16 @@ const delay = (delayTime: number) => {
         setTimeout(resolve, delayTime)
     });
 }
+
+axios.interceptors.request.use(config => {
+    const token = store.commonStore.token;
+
+    if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+})
 
 axios.interceptors.response.use(async (response) => {
     await delay(500);
@@ -70,15 +80,18 @@ const EventActions = {
     getOneEvent: (eventId: string) => {
         return request.get<EventsModel>(`/Event/${eventId}`)
     },
-    createEvent: (event: EventsModel) => {
+    createEvent: (event: UpsertEventsModel) => {
         return request.post<void>(`/Event`, event)
     },
-    updateEvent: (event: EventsModel) => {
+    updateEvent: (event: UpsertEventsModel) => {
         return request.put<void>(`/Event`, event)
     },
-    deleteEvent: (eventId: string) => {
-        return request.delete<void>(`/Event/${eventId}`)
+    deleteEvent: (eventID: string, userID: string) => {
+        return request.delete<void>(`/Event/${eventID}/${userID}`)
     },
+    attendEvent: (eventID: string, userID: string) => {
+        return request.post<void>(`/Event/attend/${eventID}/${userID}`, {})
+    }
 }
 
 const AccountActions = {

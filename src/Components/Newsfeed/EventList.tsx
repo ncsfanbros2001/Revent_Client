@@ -1,5 +1,5 @@
-import { Header, Item, Segment } from "semantic-ui-react"
-import { Events } from "../../Interfaces/event"
+import { Header } from "semantic-ui-react"
+import { EventsModel } from "../../Interfaces/event"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
 import EventListItem from "./EventListItem"
@@ -15,7 +15,7 @@ const EventList = () => {
                 {groupedEvents.map(([group, events]) => (
                     <Fragment key={group}>
                         <Header sub color="teal">{group}</Header>
-                        {events.map((event: Events) => (
+                        {events.map((event: EventsModel) => (
                             <EventListItem event={event} key={event.eventID} />
                         ))}
                     </Fragment>

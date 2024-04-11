@@ -1,9 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { Button, Header, Item, Segment, Image } from "semantic-ui-react";
+import { Button, Header, Item, Segment, Image, Label } from "semantic-ui-react";
 import { EventsModel } from "../../Interfaces/event";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
+import { EventStatus } from "../../Utilities/staticValues";
+import { Fragment } from "react/jsx-runtime";
 
 const eventImageStyle = {
     filter: 'brightness(80%)'
@@ -24,12 +27,15 @@ interface Props {
 
 const EventDetailHeader = ({ event }: Props) => {
     const { modalStore, eventStore } = useStore();
-    const { openModal } = modalStore
-    const { selectedEvent } = eventStore
+    const { updateAttendance, loading, selectedEvent, cancelEvent } = eventStore
 
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{ padding: '0' }}>
+                {
+                    event.status === EventStatus.Cancelled && <Label
+                        style={{ position: "absolute", zIndex: 1000, left: -14, top: 20 }} ribbon color="red" content="Cancelled" />
+                }
                 <Image src='../../../public/travel.jpg' fluid style={eventImageStyle} />
                 <Segment style={eventImageTextStyle} basic>
                     <Item.Group>
@@ -38,7 +44,7 @@ const EventDetailHeader = ({ event }: Props) => {
                                 <Header size='huge' content={event.title} style={{ color: 'white' }} />
                                 <p>{format(event.beginTime!, 'dd MMM yyyy h:mm aa')}</p>
                                 <p>
-                                    Hosted by <strong>Inscifer</strong>
+                                    Hosted by <strong><Link to={`/profiles/${event.host?.username}`}>{event.host?.fullname}</Link></strong>
                                 </p>
                             </Item.Content>
                         </Item>
@@ -46,11 +52,43 @@ const EventDetailHeader = ({ event }: Props) => {
                 </Segment>
             </Segment>
             <Segment clearing attached='bottom'>
-                <Button color='teal'>Join Event</Button>
-                <Button>Cancel attendance</Button>
-                <Button color='orange' floated='right' onClick={() => openModal(<EventForm selectedEvent={selectedEvent} />)}>
-                    Manage Event
-                </Button>
+                {
+                    event.isHost ? (
+                        <Fragment>
+                            <Button
+                                color='red'
+                                floated='left'
+                                basic={event.status === EventStatus.Cancelled}
+                                disabled={event.status === EventStatus.Cancelled}
+                                onClick={() => cancelEvent()} loading={loading}>
+                                {event.status === EventStatus.Cancelled ? 'Event Cancelled' : 'Cancel Event'}
+                            </Button>
+                            <Button
+                                color='orange'
+                                floated='right'
+                                disabled={event.status === EventStatus.Cancelled}
+                                onClick={() => modalStore.openModal(<EventForm selectedEvent={selectedEvent} />)}>
+                                Manage Event
+                            </Button>
+                        </Fragment>
+
+                    ) : event.isGoing ? (
+                        <Button
+                            loading={loading}
+                            disabled={event.status === EventStatus.Cancelled}
+                            onClick={() => updateAttendance()}>
+                            Cancel attendance
+                        </Button>
+                    ) : (
+                        <Button
+                            loading={loading}
+                            disabled={event.status === EventStatus.Cancelled}
+                            color='teal'
+                            onClick={() => updateAttendance()}>
+                            Join Event
+                        </Button>
+                    )
+                }
             </Segment>
         </Segment.Group>
     )

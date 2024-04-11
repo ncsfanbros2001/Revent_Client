@@ -32,7 +32,7 @@ const EventDetails = () => {
             </Grid.Column>
 
             <Grid.Column width={6}>
-                <EventDetailGuestList />
+                <EventDetailGuestList event={selectedEvent} />
             </Grid.Column>
         </Grid>
     )

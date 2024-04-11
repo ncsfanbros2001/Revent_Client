@@ -10,3 +10,9 @@ export const genderOptions = [
     { text: "Male", value: "male" },
     { text: "Female", value: "female" }
 ]
+
+export const publicityOptions = [
+    { text: "Public", value: "public" },
+    { text: "Friends Only", value: "friends" },
+    { text: "Private", value: "private" }
+]

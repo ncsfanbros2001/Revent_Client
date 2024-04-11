@@ -2,13 +2,13 @@ import { Button, Segment } from "semantic-ui-react"
 import { useEffect, useState } from "react"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
-import { EventsModel } from "../../Interfaces/event"
+import { EventFormValues, EventsModel } from "../../Interfaces/event"
 import LoadingComponent from "../Common/LoadingComponent"
 import { Formik, Form } from "formik"
 import * as Yup from 'yup'
 import TextInput from "../FormikControls/TextInput"
 import SelectInput from "../FormikControls/SelectInput"
-import { eventCategoryOptions } from "../../Utilities/dropdownOptions"
+import { eventCategoryOptions, publicityOptions } from "../../Utilities/dropdownOptions"
 import DateInput from "../FormikControls/DateInput"
 import TextAreaInput from "../FormikControls/TextAreaInput"
 
@@ -17,26 +17,11 @@ interface Props {
 }
 
 const EventForm = (props: Props) => {
-    const { eventStore, modalStore } = useStore()
-    const { closeModal } = modalStore
-    const { createEvent, updateEvent, loading, loadingInitial } = eventStore
+    const { eventStore, modalStore, userStore } = useStore()
+    const { createEvent, updateEvent, loadingInitial } = eventStore
     const { selectedEvent } = props
 
-    const [eventInfo, setEventInfo] = useState<EventsModel>({
-        eventID: '',
-        title: '',
-        wallpaper: '',
-        location: '',
-        beginTime: null,
-        endTime: null,
-        category: '',
-        status: '',
-        description: '',
-        publicity: '',
-        attendDeadline: null,
-        createdTime: null,
-        updatedAt: null,
-    })
+    const [eventInfo, setEventInfo] = useState<EventFormValues>(new EventFormValues())
 
     const validationSchema = Yup.object({
         title: Yup.string().required('Title is required'),
@@ -47,18 +32,25 @@ const EventForm = (props: Props) => {
         category: Yup.string().required('Category is required'),
         description: Yup.string().required('Description is required'),
         publicity: Yup.string().required('Publicity is required'),
-        attendDeadline: Yup.string().required('AttendDeadline is required')
+        attendDeadline: Yup.string().required('Attend Deadline is required')
     })
 
     useEffect(() => {
         if (selectedEvent) {
-            setEventInfo(selectedEvent)
+            setEventInfo(new EventFormValues(selectedEvent))
         }
     }, [selectedEvent])
 
-    const handleFormSubmit = (event: EventsModel) => {
-        selectedEvent ? updateEvent(event) : createEvent(event);
-        closeModal()
+    const handleFormSubmit = (event: EventFormValues) => {
+        selectedEvent ? updateEvent({
+            eventToUpsert: event,
+            hostUserID: userStore.currentUser?.userID!
+        }) : createEvent({
+            eventToUpsert: event,
+            hostUserID: userStore.currentUser?.userID!
+        });
+
+        modalStore.closeModal()
     }
 
     if (loadingInitial) return <LoadingComponent content="Loading Event..." />
@@ -109,9 +101,10 @@ const EventForm = (props: Props) => {
                                 placeholder='Description'
                                 rows={5} />
 
-                            <TextInput
+                            <SelectInput
                                 name='publicity'
-                                placeholder='Publictiy' />
+                                placeholder='Publictiy'
+                                options={publicityOptions} />
 
                             <DateInput
                                 name='attendDeadline'
@@ -124,7 +117,7 @@ const EventForm = (props: Props) => {
 
                             <Button
                                 disabled={isSubmitting || !dirty || !isValid}
-                                loading={loading}
+                                loading={isSubmitting}
                                 floated="right"
                                 positive type="submit"
                                 content='Submit' />
@@ -132,7 +125,7 @@ const EventForm = (props: Props) => {
                                 floated="right"
                                 type="button"
                                 content='Cancel'
-                                onClick={() => closeModal()} />
+                                onClick={() => modalStore.closeModal()} />
                         </Form>
                     )
                 }

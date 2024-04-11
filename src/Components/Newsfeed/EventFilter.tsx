@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite"
 import Calendar from "react-calendar"
 import { Header, Menu } from "semantic-ui-react"
 
@@ -17,4 +18,4 @@ const EventFilter = () => {
     )
 }
 
-export default EventFilter
+export default observer(EventFilter)

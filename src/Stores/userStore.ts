@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { JwtInfoModel, LoginModel, RegisterModel, UserModel } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
@@ -20,14 +20,14 @@ export default class UserStore {
         const user = await axiosAgent.AccountActions.login(credentials)
         store.commonStore.setToken(user.token)
 
-        this.currentUser = user
+        runInAction(() => this.currentUser = user)
 
         router.navigate('/')
     }
 
     logout = () => {
         store.commonStore.setToken(null)
-        this.currentUser = null
+        runInAction(() => this.currentUser = null)
 
         router.navigate('/')
     }
@@ -36,7 +36,7 @@ export default class UserStore {
         const user = await axiosAgent.AccountActions.register(registerInfo)
         store.commonStore.setToken(user.token)
 
-        this.currentUser = user
+        runInAction(() => this.currentUser = user)
 
         router.navigate('/')
     }
@@ -45,7 +45,7 @@ export default class UserStore {
         try {
             let decodedToken: JwtInfoModel = jwtDecode(store.commonStore.token!)
             const user = await axiosAgent.AccountActions.getCurrentUser(decodedToken.userID)
-            this.currentUser = user
+            runInAction(() => this.currentUser = user)
         }
         catch (error) {
             console.log(error)

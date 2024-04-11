@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite"
 import { Fragment } from "react"
 import { Header, Segment, Comment, Form, Button } from "semantic-ui-react"
 
@@ -58,4 +59,4 @@ const EventDetailComment = () => {
     )
 }
 
-export default EventDetailComment
+export default observer(EventDetailComment)

@@ -1,8 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { EventsModel } from "../Interfaces/event";
+import { EventsModel, UpsertEventsModel } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
-import { v4 as uuid } from "uuid"
 import { format } from "date-fns";
+import { v4 as uuid } from 'uuid'
+import { store } from "./store";
+import { GuestProfile } from "../Interfaces/user";
+import { EventStatus } from "../Utilities/staticValues";
 
 export default class EventStore {
     eventListRegistry = new Map<string, EventsModel>(); //<key: id of an event, value: the event itself>
@@ -51,6 +54,13 @@ export default class EventStore {
         event.endTime = new Date(event.endTime!);
         event.attendDeadline = new Date(event.attendDeadline!);
 
+        const user = store.userStore.currentUser
+        if (user) { // check if the logged in user is going to the event or not
+            event.isGoing = event.guests!.some(a => a.userID.toLowerCase() === user.userID.toLowerCase())
+            event.isHost = event.hostUserID.toLowerCase() === user.userID.toLowerCase()
+            event.host = event.guests?.find(x => x.userID.toLowerCase() === event.hostUserID.toLowerCase())
+        }
+
         runInAction(() => {
             this.eventListRegistry.set(event.eventID, event)
         })
@@ -61,7 +71,6 @@ export default class EventStore {
         this.setLoadingInitial(true)
         try {
             const events = await axiosAgent.EventActions.getAllEvents()
-
             events.forEach((event) => {
                 this.setEvent(event)
             });
@@ -96,20 +105,30 @@ export default class EventStore {
     }
 
 
-    createEvent = async (event: EventsModel) => {
+    createEvent = async (event: UpsertEventsModel) => {
         this.setLoadingInitial(true)
 
+        const user = store.userStore.currentUser
+        const guests = new GuestProfile(user!)
+
         try {
-            event.eventID = uuid();
-            event.status = 'not yet started'
-            event.createdTime = new Date()
-            event.updatedAt = new Date()
+            event.eventToUpsert.eventID = uuid();
+            event.eventToUpsert.status = EventStatus.NotYetStarted
+            event.eventToUpsert.createdTime = new Date();
+            event.eventToUpsert.updatedAt = new Date()
 
             await axiosAgent.EventActions.createEvent(event)
+            let newEvent = new EventsModel(event.eventToUpsert)
 
-            runInAction(() => {
-                this.setEvent(event)
-            })
+            newEvent.hostUserID = user!.userID
+            newEvent.guests = [guests]
+            newEvent.isGoing = true
+            newEvent.isHost = true
+
+            console.log(newEvent)
+
+            this.setEvent(newEvent)
+            this.setSelectedEvent(newEvent)
         }
         catch (error) {
             console.log("Create event failed", error)
@@ -120,15 +139,19 @@ export default class EventStore {
     }
 
 
-    updateEvent = async (event: EventsModel) => {
+    updateEvent = async (event: UpsertEventsModel) => {
         this.setLoadingInitial(true)
 
         try {
             await axiosAgent.EventActions.updateEvent(event)
 
             runInAction(() => {
-                this.setEvent(event)
-                this.setSelectedEvent(event)
+                if (event.eventToUpsert.eventID) {
+                    const updatedActivity = { ...this.getEvent(event.eventToUpsert.eventID), ...event.eventToUpsert }
+                    // console.log(updatedActivity)
+                    this.setEvent(updatedActivity as EventsModel)
+                    this.setSelectedEvent(updatedActivity as EventsModel)
+                }
             })
         }
         catch (error) {
@@ -140,11 +163,11 @@ export default class EventStore {
     }
 
 
-    deleteEvent = async (eventID: string) => {
+    deleteEvent = async (eventID: string, userID: string) => {
         this.loading = true
 
         try {
-            await axiosAgent.EventActions.deleteEvent(eventID)
+            await axiosAgent.EventActions.deleteEvent(eventID, userID)
 
             runInAction(() => {
                 this.eventListRegistry.delete(eventID)
@@ -157,6 +180,52 @@ export default class EventStore {
             runInAction(() => {
                 this.loading = false
             })
+        }
+    }
+
+    updateAttendance = async () => {
+        this.loading = true
+        const user = store.userStore.currentUser
+
+        try {
+            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID, user!.userID)
+            runInAction(() => {
+                if (this.selectedEvent?.isGoing) {
+                    this.selectedEvent.guests = this.selectedEvent.guests
+                        .filter(x => x.userID !== user?.userID)
+                    this.selectedEvent.isGoing = false
+                }
+                else {
+                    const guest = new GuestProfile(user!)
+                    this.selectedEvent!.guests.push(guest)
+                    this.selectedEvent!.isGoing = true
+                }
+                this.eventListRegistry.set(this.selectedEvent!.eventID, this.selectedEvent!)
+            })
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            runInAction(() => this.loading = false)
+        }
+    }
+
+    cancelEvent = async () => {
+        this.loading = true
+        const user = store.userStore.currentUser
+
+        try {
+            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID, user!.userID)
+            runInAction(() => this.selectedEvent!.status = EventStatus.Cancelled)
+
+            this.setEvent(this.selectedEvent!)
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            runInAction(() => this.loading = false)
         }
     }
 

@@ -1,30 +1,44 @@
-import { Button, Icon, Item, Segment } from "semantic-ui-react"
+import { Button, Icon, Item, Label, Segment } from "semantic-ui-react"
 import { EventsModel } from "../../Interfaces/event"
-import { useStore } from "../../Stores/store"
 import { Link } from "react-router-dom"
 import { format } from "date-fns"
+import EventGuestList from "./EventGuestList"
+import { observer } from "mobx-react-lite"
+import { EventStatus } from "../../Utilities/staticValues"
 
 interface Props {
     event: EventsModel
 }
 
 const EventListItem = ({ event }: Props) => {
-    const { eventStore } = useStore();
-    const { deleteEvent, loading } = eventStore
-
-    const handleDeleteEvent = (eventId: string) => {
-        deleteEvent(eventId)
-    }
 
     return (
         <Segment.Group>
             <Segment>
+                {
+                    event.status === EventStatus.Cancelled &&
+                    <Label attached="top" color="red" content="Cancelled" style={{ textAlign: 'center' }} />
+                }
                 <Item.Group>
                     <Item>
                         <Item.Image size="tiny" circular src='../../../public/user.png' />
                         <Item.Content>
                             <Item.Header as={Link} to={`/details/${event.eventID}`}>{event.title}</Item.Header>
-                            <Item.Description>Hosted by Inscifer</Item.Description>
+                            <Item.Description>Hosted by {event.host?.fullname}</Item.Description>
+                            {
+                                event.isHost && (
+                                    <Item.Description>
+                                        <Label basic color="orange">Hosting</Label>
+                                    </Item.Description>
+                                )
+                            }
+                            {
+                                event.isGoing && !event.isHost && (
+                                    <Item.Description>
+                                        <Label basic color="green">Attending</Label>
+                                    </Item.Description>
+                                )
+                            }
                         </Item.Content>
                     </Item>
                 </Item.Group>
@@ -37,16 +51,14 @@ const EventListItem = ({ event }: Props) => {
             </Segment>
 
             <Segment secondary>
-                Guest List Goes Here
+                <EventGuestList guests={event.guests} />
             </Segment>
 
             <Segment clearing>
-                <span>{event.description}</span>
                 <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
-                <Button loading={loading} onClick={() => handleDeleteEvent(event.eventID)} color="red" floated="right" content="Delete" />
             </Segment>
         </Segment.Group>
     )
 }
 
-export default EventListItem
+export default observer(EventListItem)

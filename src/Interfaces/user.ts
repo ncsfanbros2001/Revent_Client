@@ -2,6 +2,7 @@ export interface UserModel {
     userID: string
     email: string
     fullname: string
+    username: string
     phoneNumber: string
     gender: string
     address: string
@@ -13,6 +14,7 @@ export interface UserModel {
 
 export interface RegisterModel {
     fullname: string
+    username: string
     email: string
     phoneNumber: string
     gender: string
@@ -29,4 +31,25 @@ export interface LoginModel {
 export interface JwtInfoModel {
     userID: string,
     email: string
+}
+
+export interface IGuestProfile {
+    userID: string,
+    fullname: string,
+    username: string,
+    avatar?: string
+}
+
+export class GuestProfile implements IGuestProfile {
+    constructor(user: UserModel) {
+        this.userID = user.userID
+        this.fullname = user.fullname
+        this.username = user.username
+        this.avatar = user.avatar
+    }
+
+    userID: string
+    fullname: string
+    username: string
+    avatar?: string
 }
