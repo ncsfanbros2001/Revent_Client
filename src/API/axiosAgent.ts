@@ -3,7 +3,8 @@ import { EventsModel, UpsertEventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
-import { LoginModel, RegisterModel, UserModel } from "../Interfaces/user";
+import { LoginModel, Profile, RegisterModel, UserModel } from "../Interfaces/user";
+import { Photo } from "../Interfaces/photo";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -24,7 +25,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await delay(500);
+    await delay(0);
     return response;
 }, (error: AxiosError) => {
     const { data, status, config } = error.response as AxiosResponse;
@@ -96,13 +97,25 @@ const EventActions = {
 
 const AccountActions = {
     getCurrentUser: (userID: string) => {
-        return request.get<UserModel>(`/account/${userID}`)
+        return request.get<UserModel>(`/Account/${userID}`)
     },
     login: (loginInfo: LoginModel) => {
-        return request.post<UserModel>('/account/login', loginInfo)
+        return request.post<UserModel>('/Account/login', loginInfo)
     },
     register: (registerInfo: RegisterModel) => {
-        return request.post<UserModel>('/account/register', registerInfo)
+        return request.post<UserModel>('/Account/register', registerInfo)
+    },
+    getProfile: (username: string) => {
+        return request.get<Profile>(`/Profile/${username}`)
+    },
+    changeAvatar: (file: Blob, userID: string) => {
+        let formData = new FormData();
+        formData.append('File', file);
+        formData.append('userID', userID);
+
+        return axios.post<Photo>('/Photo', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
     }
 }
 

@@ -36,7 +36,7 @@ const EventDetailHeader = ({ event }: Props) => {
                     event.status === EventStatus.Cancelled && <Label
                         style={{ position: "absolute", zIndex: 1000, left: -14, top: 20 }} ribbon color="red" content="Cancelled" />
                 }
-                <Image src='../../../public/travel.jpg' fluid style={eventImageStyle} />
+                <Image src='/public/travel.jpg' fluid style={eventImageStyle} />
                 <Segment style={eventImageTextStyle} basic>
                     <Item.Group>
                         <Item>

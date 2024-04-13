@@ -17,7 +17,7 @@ const EventDetailComment = () => {
             <Segment attached>
                 <Comment.Group>
                     <Comment>
-                        <Comment.Avatar src='../../../public/user.png' />
+                        <Comment.Avatar src='/public/user.png' />
                         <Comment.Content>
                             <Comment.Author as='a'>Matt</Comment.Author>
                             <Comment.Metadata>
@@ -31,7 +31,7 @@ const EventDetailComment = () => {
                     </Comment>
 
                     <Comment>
-                        <Comment.Avatar src='../../../public/user.png' />
+                        <Comment.Avatar src='/public/user.png' />
                         <Comment.Content>
                             <Comment.Author as='a'>Joe Henderson</Comment.Author>
                             <Comment.Metadata>

@@ -34,7 +34,7 @@ const EventDetailGuestList = ({ event: { guests, host } }: Props) => {
                                 >
                                     Host
                                 </Label>}
-                            <Image size='tiny' src={guest.avatar || '../../../public/user.png'} />
+                            <Image size='tiny' src={guest.avatarURL || '/public/user.png'} />
                             <Item.Content verticalAlign='middle'>
                                 <Item.Header as='h3'>
                                     <Link to={`/profiles/${guest.username}`}>{guest.fullname}</Link>

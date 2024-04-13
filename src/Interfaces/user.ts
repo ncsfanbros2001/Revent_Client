@@ -7,7 +7,7 @@ export interface UserModel {
     gender: string
     address: string
     birthDate: Date | null
-    avatar: string
+    avatarURL: string
     biography: string
     token: string
 }
@@ -33,23 +33,23 @@ export interface JwtInfoModel {
     email: string
 }
 
-export interface IGuestProfile {
+export interface IProfile {
     userID: string,
     fullname: string,
     username: string,
-    avatar?: string
+    avatarURL?: string
 }
 
-export class GuestProfile implements IGuestProfile {
+export class Profile implements IProfile {
     constructor(user: UserModel) {
         this.userID = user.userID
         this.fullname = user.fullname
         this.username = user.username
-        this.avatar = user.avatar
+        this.avatarURL = user.avatarURL
     }
 
     userID: string
     fullname: string
     username: string
-    avatar?: string
+    avatarURL?: string
 }

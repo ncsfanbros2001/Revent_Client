@@ -4,7 +4,7 @@ import axiosAgent from "../API/axiosAgent";
 import { format } from "date-fns";
 import { v4 as uuid } from 'uuid'
 import { store } from "./store";
-import { GuestProfile } from "../Interfaces/user";
+import { Profile } from "../Interfaces/user";
 import { EventStatus } from "../Utilities/staticValues";
 
 export default class EventStore {
@@ -109,7 +109,7 @@ export default class EventStore {
         this.setLoadingInitial(true)
 
         const user = store.userStore.currentUser
-        const guests = new GuestProfile(user!)
+        const guests = new Profile(user!)
 
         try {
             event.eventToUpsert.eventID = uuid();
@@ -148,7 +148,6 @@ export default class EventStore {
             runInAction(() => {
                 if (event.eventToUpsert.eventID) {
                     const updatedActivity = { ...this.getEvent(event.eventToUpsert.eventID), ...event.eventToUpsert }
-                    // console.log(updatedActivity)
                     this.setEvent(updatedActivity as EventsModel)
                     this.setSelectedEvent(updatedActivity as EventsModel)
                 }
@@ -196,7 +195,7 @@ export default class EventStore {
                     this.selectedEvent.isGoing = false
                 }
                 else {
-                    const guest = new GuestProfile(user!)
+                    const guest = new Profile(user!)
                     this.selectedEvent!.guests.push(guest)
                     this.selectedEvent!.isGoing = true
                 }

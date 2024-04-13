@@ -21,10 +21,16 @@ const EventListItem = ({ event }: Props) => {
                 }
                 <Item.Group>
                     <Item>
-                        <Item.Image size="tiny" circular src='../../../public/user.png' />
+                        <Item.Image
+                            size="tiny"
+                            style={{ marginBottom: 5 }}
+                            circular
+                            src={event.host?.avatarURL || '/public/user.png'} />
                         <Item.Content>
                             <Item.Header as={Link} to={`/details/${event.eventID}`}>{event.title}</Item.Header>
-                            <Item.Description>Hosted by {event.host?.fullname}</Item.Description>
+                            <Item.Description>
+                                Hosted by <Link to={`/profiles/${event.host?.username}`}>{event.host?.fullname}</Link>
+                            </Item.Description>
                             {
                                 event.isHost && (
                                     <Item.Description>

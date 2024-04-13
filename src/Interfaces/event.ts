@@ -1,4 +1,4 @@
-import { GuestProfile } from "./user"
+import { Profile } from "./user"
 
 export interface IEventsModel {
     eventID: string
@@ -17,8 +17,8 @@ export interface IEventsModel {
     hostUserID: string
     isGoing: boolean
     isHost: boolean
-    host?: GuestProfile
-    guests: GuestProfile[]
+    host?: Profile
+    guests: Profile[]
 }
 
 export class EventsModel implements IEventsModel {
@@ -54,8 +54,8 @@ export class EventsModel implements IEventsModel {
     hostUserID: string = ''
     isGoing: boolean = false
     isHost: boolean = false
-    host?: GuestProfile
-    guests: GuestProfile[] = []
+    host?: Profile
+    guests: Profile[] = []
 }
 
 export class EventFormValues {

@@ -1,16 +1,16 @@
 import { observer } from "mobx-react-lite"
-import { GuestProfile } from "../../Interfaces/user"
+import { Profile } from "../../Interfaces/user"
 import { Card, Icon, Image } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 
 interface Props {
-    userProfile: GuestProfile
+    userProfile: Profile
 }
 
 const ProfileCard = ({ userProfile }: Props) => {
     return (
         <Card as={Link} to={`/profiles/${userProfile.username}`}>
-            <Image src={userProfile.avatar || '../../../public/user.png'} />
+            <Image src={userProfile.avatarURL || '/public/user.png'} />
             <Card.Content>
                 <Card.Header>{userProfile.fullname}</Card.Header>
                 <Card.Description>{userProfile.username}</Card.Description>

@@ -6,7 +6,7 @@ const ModalContainer = () => {
     const { modalStore } = useStore()
 
     return (
-        <Modal open={modalStore.modal.open} onClose={() => modalStore.closeModal} size="small" >
+        <Modal open={modalStore.modal.open} onClose={() => modalStore.closeModal} size="large">
             {modalStore.modal.body}
         </Modal>
     )

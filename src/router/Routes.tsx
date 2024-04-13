@@ -5,6 +5,7 @@ import EventDetails from "../Pages/EventDetails";
 import TestErrors from "../Pages/TestError";
 import NotFound from "../Components/Errors/NotFound";
 import ServerError from "../Components/Errors/ServerError";
+import ProfileDetails from "../Pages/ProfileDetails";
 
 export const routes: RouteObject[] = [
     {
@@ -16,6 +17,7 @@ export const routes: RouteObject[] = [
             { path: 'errors', element: <TestErrors /> },
             { path: 'notFound', element: <NotFound /> },
             { path: 'serverError', element: <ServerError /> },
+            { path: 'profiles/:username', element: <ProfileDetails /> },
             { path: '*', element: <Navigate to='/notFound' /> },
         ]
     }
