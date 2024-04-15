@@ -147,9 +147,9 @@ export default class EventStore {
 
             runInAction(() => {
                 if (event.eventToUpsert.eventID) {
-                    const updatedActivity = { ...this.getEvent(event.eventToUpsert.eventID), ...event.eventToUpsert }
-                    this.setEvent(updatedActivity as EventsModel)
-                    this.setSelectedEvent(updatedActivity as EventsModel)
+                    const updatedEvent = { ...this.getEvent(event.eventToUpsert.eventID), ...event.eventToUpsert }
+                    this.setEvent(updatedEvent as EventsModel)
+                    this.setSelectedEvent(updatedEvent as EventsModel)
                 }
             })
         }
@@ -228,4 +228,7 @@ export default class EventStore {
         }
     }
 
+    clearSelectedActivity = () => {
+        this.selectedEvent = undefined
+    }
 }

@@ -3,12 +3,14 @@ import EventStore from "./eventStore";
 import ModalStore from "./modalStore";
 import CommonStore from "./commonStore";
 import UserStore from "./userStore";
+import CommentStore from "./commentStore";
 
 interface Stores {
     eventStore: EventStore,
     modalStore: ModalStore,
     commonStore: CommonStore,
-    userStore: UserStore
+    userStore: UserStore,
+    commentStore: CommentStore
 }
 
 export const store: Stores = {
@@ -16,6 +18,7 @@ export const store: Stores = {
     modalStore: new ModalStore(),
     commonStore: new CommonStore(),
     userStore: new UserStore(),
+    commentStore: new CommentStore(),
 }
 
 export const StoreContext = createContext(store)

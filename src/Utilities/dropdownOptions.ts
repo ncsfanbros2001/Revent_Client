@@ -3,7 +3,7 @@ export const eventCategoryOptions = [
     { text: "Movie", value: "movie" },
     { text: "Culture", value: "culture" },
     { text: "Works", value: "works" },
-    { text: "Gaming", value: "Gaming" },
+    { text: "Gaming", value: "gaming" },
 ]
 
 export const genderOptions = [
@@ -13,6 +13,5 @@ export const genderOptions = [
 
 export const publicityOptions = [
     { text: "Public", value: "public" },
-    { text: "Friends Only", value: "friends" },
     { text: "Private", value: "private" }
 ]

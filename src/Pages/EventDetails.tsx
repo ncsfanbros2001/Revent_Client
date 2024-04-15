@@ -12,14 +12,16 @@ import EventDetailGuestList from '../Components/Details/EventDetailGuestList';
 
 const EventDetails = () => {
     const { eventStore } = useStore();
-    const { selectedEvent, loadOneEvent, loadingInitial } = eventStore
+    const { selectedEvent, loadOneEvent, loadingInitial, clearSelectedActivity } = eventStore
     const { eventID } = useParams()
 
     useEffect(() => {
         if (eventID) {
             loadOneEvent(eventID)
         }
-    }, [eventID, loadOneEvent])
+
+        return () => clearSelectedActivity()
+    }, [eventID, loadOneEvent, clearSelectedActivity])
 
     if (!selectedEvent || loadingInitial) return <LoadingComponent /> // Not gonna happen 
 
@@ -28,7 +30,7 @@ const EventDetails = () => {
             <Grid.Column width={10}>
                 <EventDetailHeader event={selectedEvent} />
                 <EventDetailInfo event={selectedEvent} />
-                <EventDetailComment />
+                <EventDetailComment eventID={eventID!} />
             </Grid.Column>
 
             <Grid.Column width={6}>
