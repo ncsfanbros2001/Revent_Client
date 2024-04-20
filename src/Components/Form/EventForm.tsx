@@ -1,4 +1,4 @@
-import { Button, Segment } from "semantic-ui-react"
+import { Button, Header, Segment } from "semantic-ui-react"
 import { useEffect, useState } from "react"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
@@ -11,13 +11,14 @@ import SelectInput from "../FormikControls/SelectInput"
 import { eventCategoryOptions, publicityOptions } from "../../Utilities/dropdownOptions"
 import DateInput from "../FormikControls/DateInput"
 import TextAreaInput from "../FormikControls/TextAreaInput"
+import { router } from "../../router/Routes"
 
 interface Props {
     selectedEvent?: EventsModel
 }
 
 const EventForm = (props: Props) => {
-    const { eventStore, modalStore, userStore } = useStore()
+    const { eventStore, modalStore } = useStore()
     const { createEvent, updateEvent, loadingInitial } = eventStore
     const { selectedEvent } = props
 
@@ -42,13 +43,8 @@ const EventForm = (props: Props) => {
     }, [selectedEvent])
 
     const handleFormSubmit = (event: EventFormValues) => {
-        selectedEvent ? updateEvent({
-            eventToUpsert: event,
-            hostUserID: userStore.currentUser?.userID!
-        }) : createEvent({
-            eventToUpsert: event,
-            hostUserID: userStore.currentUser?.userID!
-        });
+        selectedEvent ? updateEvent(event)
+            .then(() => router.navigate(`/details/${event.eventID}`)) : createEvent(event);
 
         modalStore.closeModal()
     }
@@ -57,6 +53,7 @@ const EventForm = (props: Props) => {
 
     return (
         <Segment clearing>
+            <Header as='h1' color="teal" content={selectedEvent ? 'Update Event' : 'Create Event'} />
             <Formik
                 enableReinitialize={true}
                 initialValues={eventInfo}
@@ -119,8 +116,9 @@ const EventForm = (props: Props) => {
                                 disabled={isSubmitting || !dirty || !isValid}
                                 loading={isSubmitting}
                                 floated="right"
-                                positive type="submit"
-                                content='Submit' />
+                                positive
+                                type="submit"
+                                content={selectedEvent ? 'Update' : 'Create'} />
                             <Button
                                 floated="right"
                                 type="button"

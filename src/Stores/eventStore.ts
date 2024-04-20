@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { EventsModel, UpsertEventsModel } from "../Interfaces/event";
+import { EventFormValues, EventsModel } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
 import { format } from "date-fns";
 import { v4 as uuid } from 'uuid'
@@ -66,6 +66,9 @@ export default class EventStore {
         })
     }
 
+    clearSelectedEvent = () => {
+        this.selectedEvent = undefined
+    }
 
     loadAllEvents = async () => {
         this.setLoadingInitial(true)
@@ -105,27 +108,25 @@ export default class EventStore {
     }
 
 
-    createEvent = async (event: UpsertEventsModel) => {
+    createEvent = async (event: EventFormValues) => {
         this.setLoadingInitial(true)
 
         const user = store.userStore.currentUser
         const guests = new Profile(user!)
 
         try {
-            event.eventToUpsert.eventID = uuid();
-            event.eventToUpsert.status = EventStatus.NotYetStarted
-            event.eventToUpsert.createdTime = new Date();
-            event.eventToUpsert.updatedAt = new Date()
+            event.eventID = uuid();
+            event.status = EventStatus.NotYetStarted
+            event.createdTime = new Date();
+            event.updatedAt = new Date()
 
             await axiosAgent.EventActions.createEvent(event)
-            let newEvent = new EventsModel(event.eventToUpsert)
+            let newEvent = new EventsModel(event)
 
             newEvent.hostUserID = user!.userID
             newEvent.guests = [guests]
             newEvent.isGoing = true
             newEvent.isHost = true
-
-            console.log(newEvent)
 
             this.setEvent(newEvent)
             this.setSelectedEvent(newEvent)
@@ -139,15 +140,15 @@ export default class EventStore {
     }
 
 
-    updateEvent = async (event: UpsertEventsModel) => {
+    updateEvent = async (event: EventFormValues) => {
         this.setLoadingInitial(true)
 
         try {
             await axiosAgent.EventActions.updateEvent(event)
 
             runInAction(() => {
-                if (event.eventToUpsert.eventID) {
-                    const updatedEvent = { ...this.getEvent(event.eventToUpsert.eventID), ...event.eventToUpsert }
+                if (event.eventID) {
+                    const updatedEvent = { ...this.getEvent(event.eventID), ...event }
                     this.setEvent(updatedEvent as EventsModel)
                     this.setSelectedEvent(updatedEvent as EventsModel)
                 }
@@ -162,11 +163,11 @@ export default class EventStore {
     }
 
 
-    deleteEvent = async (eventID: string, userID: string) => {
+    deleteEvent = async (eventID: string) => {
         this.loading = true
 
         try {
-            await axiosAgent.EventActions.deleteEvent(eventID, userID)
+            await axiosAgent.EventActions.deleteEvent(eventID)
 
             runInAction(() => {
                 this.eventListRegistry.delete(eventID)
@@ -187,7 +188,7 @@ export default class EventStore {
         const user = store.userStore.currentUser
 
         try {
-            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID, user!.userID)
+            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID)
             runInAction(() => {
                 if (this.selectedEvent?.isGoing) {
                     this.selectedEvent.guests = this.selectedEvent.guests
@@ -212,10 +213,9 @@ export default class EventStore {
 
     cancelEvent = async () => {
         this.loading = true
-        const user = store.userStore.currentUser
 
         try {
-            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID, user!.userID)
+            await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID)
             runInAction(() => this.selectedEvent!.status = EventStatus.Cancelled)
 
             this.setEvent(this.selectedEvent!)
@@ -228,7 +228,14 @@ export default class EventStore {
         }
     }
 
-    clearSelectedActivity = () => {
-        this.selectedEvent = undefined
+    updateGuestFollowing = (userID: string) => {
+        this.eventListRegistry.forEach((event) => {
+            event.guests.forEach((guest) => {
+                if (guest.userID === userID) {
+                    guest.following ? guest.followersCount-- : guest.followersCount++
+                    guest.following = !guest.following
+                }
+            })
+        });
     }
 }

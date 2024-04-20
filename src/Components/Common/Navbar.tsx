@@ -1,4 +1,4 @@
-import { Button, Container, Menu, Image, Dropdown } from "semantic-ui-react";
+import { Button, Container, Menu, Image, Dropdown, Search } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { Link, NavLink } from "react-router-dom";
 import { useStore } from "../../Stores/store";
@@ -19,7 +19,14 @@ const Navbar = () => {
 
                 <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
-                <Menu.Item name="Errors" as={NavLink} to='/errors' />
+                {/* <Menu.Item name="Errors" as={NavLink} to='/errors' /> */}
+
+                <Menu.Item>
+                    <Search
+                        category
+                        placeholder="Search User"
+                    />
+                </Menu.Item>
 
                 <Menu.Item>
                     <Button color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
@@ -29,7 +36,7 @@ const Navbar = () => {
                     <Image src={currentUser?.avatarURL || '/public/user.png'} avatar spaced='right' />
                     <Dropdown pointing='top left' text={currentUser?.fullname}>
                         <Dropdown.Menu>
-                            <Dropdown.Item as={Link} to={`/profiles/${currentUser?.username}`} text="My Profile" icon="user" />
+                            <Dropdown.Item as={Link} to={`/profiles/${currentUser?.userID}`} text="My Profile" icon="user" />
                             <Dropdown.Item onClick={() => logout()} text='Logout' icon='power' />
                         </Dropdown.Menu>
                     </Dropdown>

@@ -37,9 +37,9 @@ const EventDetailGuestList = ({ event: { guests, host } }: Props) => {
                             <Image size='tiny' src={guest.avatarURL || '/public/user.png'} />
                             <Item.Content verticalAlign='middle'>
                                 <Item.Header as='h3'>
-                                    <Link to={`/profiles/${guest.username}`}>{guest.fullname}</Link>
+                                    <Link to={`/profiles/${guest.userID}`}>{guest.fullname}</Link>
                                 </Item.Header>
-                                <Item.Extra style={{ color: 'orange' }}>Following</Item.Extra>
+                                {guest.following && <Item.Extra style={{ color: 'orange' }}>Following</Item.Extra>}
                             </Item.Content>
                         </Item>
                     ))}

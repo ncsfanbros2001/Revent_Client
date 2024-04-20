@@ -12,7 +12,7 @@ import EventDetailGuestList from '../Components/Details/EventDetailGuestList';
 
 const EventDetails = () => {
     const { eventStore } = useStore();
-    const { selectedEvent, loadOneEvent, loadingInitial, clearSelectedActivity } = eventStore
+    const { selectedEvent, loadOneEvent, loadingInitial, clearSelectedEvent } = eventStore
     const { eventID } = useParams()
 
     useEffect(() => {
@@ -20,8 +20,8 @@ const EventDetails = () => {
             loadOneEvent(eventID)
         }
 
-        return () => clearSelectedActivity()
-    }, [eventID, loadOneEvent, clearSelectedActivity])
+        return () => clearSelectedEvent()
+    }, [eventID, loadOneEvent, clearSelectedEvent])
 
     if (!selectedEvent || loadingInitial) return <LoadingComponent /> // Not gonna happen 
 

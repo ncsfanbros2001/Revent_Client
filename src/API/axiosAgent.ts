@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { EventsModel, UpsertEventsModel } from "../Interfaces/event";
+import { EventFormValues, EventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
@@ -81,17 +81,17 @@ const EventActions = {
     getOneEvent: (eventId: string) => {
         return request.get<EventsModel>(`/Event/${eventId}`)
     },
-    createEvent: (event: UpsertEventsModel) => {
-        return request.post<void>(`/Event`, event)
+    createEvent: (eventToCreate: EventFormValues) => {
+        return request.post<void>(`/Event`, eventToCreate)
     },
-    updateEvent: (event: UpsertEventsModel) => {
-        return request.put<void>(`/Event`, event)
+    updateEvent: (eventToUpdate: EventFormValues) => {
+        return request.put<void>(`/Event`, eventToUpdate)
     },
-    deleteEvent: (eventID: string, userID: string) => {
-        return request.delete<void>(`/Event/${eventID}/${userID}`)
+    deleteEvent: (eventID: string) => {
+        return request.delete<void>(`/Event/${eventID}`)
     },
-    attendEvent: (eventID: string, userID: string) => {
-        return request.post<void>(`/Event/attend/${eventID}/${userID}`, {})
+    attendEvent: (eventID: string) => {
+        return request.post<void>(`/Event/attend/${eventID}`, {})
     }
 }
 
@@ -104,9 +104,12 @@ const AccountActions = {
     },
     register: (registerInfo: RegisterModel) => {
         return request.post<UserModel>('/Account/register', registerInfo)
-    },
-    getProfile: (username: string) => {
-        return request.get<Profile>(`/Profile/${username}`)
+    }
+}
+
+const ProfileActions = {
+    getProfile: (userID: string) => {
+        return request.get<Profile>(`/Profile/${userID}`)
     },
     changeAvatar: (file: Blob, userID: string) => {
         let formData = new FormData();
@@ -116,11 +119,17 @@ const AccountActions = {
         return axios.post<Photo>('/Photo', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         })
+    },
+    listFollowings: (userID: string, predicate: string) => {
+        return request.get<Profile[]>(`/follow/${userID}?predicate=${predicate}`)
+    },
+    updateFollowing: (userID: string) => {
+        return request.post(`/follow/${userID}`, {})
     }
 }
 
 const axiosAgent = {
-    EventActions, AccountActions
+    EventActions, AccountActions, ProfileActions
 }
 
 export default axiosAgent;

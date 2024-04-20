@@ -2,7 +2,7 @@ export interface ChatComment {
     commentID: string
     commentTime: Date
     content: string
-    username: string
+    userID: string
     fullname: string
     avatarURL: string
 }

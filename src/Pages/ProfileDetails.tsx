@@ -8,15 +8,15 @@ import { useEffect } from "react"
 import LoadingComponent from "../Components/Common/LoadingComponent"
 
 const ProfileDetails = () => {
-    const { username } = useParams()
-    const { userStore } = useStore()
-    const { loadProfile, loadingProfile, profile } = userStore
+    const { userID } = useParams()
+    const { profileStore } = useStore()
+    const { loadProfile, loadingProfile, profile } = profileStore
 
     useEffect(() => {
-        if (username) {
-            loadProfile(username)
+        if (userID) {
+            loadProfile(userID)
         }
-    }, [loadProfile, username])
+    }, [loadProfile, userID])
 
     if (loadingProfile) return <LoadingComponent content="Loading profile..." />
     return (

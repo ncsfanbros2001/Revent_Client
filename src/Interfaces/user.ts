@@ -38,6 +38,9 @@ export interface IProfile {
     fullname: string,
     username: string,
     avatarURL?: string
+    followersCount: number
+    followingCount: number
+    following: boolean
 }
 
 export class Profile implements IProfile {
@@ -52,4 +55,7 @@ export class Profile implements IProfile {
     fullname: string
     username: string
     avatarURL?: string
+    followersCount: number = 0
+    followingCount: number = 0
+    following: boolean = true
 }

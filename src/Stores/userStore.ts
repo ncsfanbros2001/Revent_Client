@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { JwtInfoModel, LoginModel, Profile, RegisterModel, UserModel } from "../Interfaces/user";
+import { JwtInfoModel, LoginModel, RegisterModel, UserModel } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
 import { router } from "../router/Routes";
@@ -7,26 +7,14 @@ import { jwtDecode } from "jwt-decode";
 
 export default class UserStore {
     currentUser: UserModel | null = null
-    profile: Profile | null = null
-    loadingProfile: boolean = false
-    uploading: boolean = false
 
     constructor() {
         makeAutoObservable(this)
     }
 
-    get isCurrentUser() {
-        if (store.userStore.currentUser && this.profile) {
-            return store.userStore.currentUser.userID === this.profile.userID
-        }
-        else {
-            return false
-        }
+    get isLoggedIn() {
+        return !!this.currentUser
     }
-
-    // get isLoggedIn() {
-    //     return !!this.currentUser
-    // }
 
     login = async (credentials: LoginModel) => {
         const user = await axiosAgent.AccountActions.login(credentials)
@@ -41,7 +29,7 @@ export default class UserStore {
         store.commonStore.setToken(null)
         runInAction(() => {
             this.currentUser = null
-            this.profile = null
+            store.profileStore.profile = null
         })
 
         router.navigate('/')
@@ -64,44 +52,6 @@ export default class UserStore {
         }
         catch (error) {
             console.log(error)
-        }
-    }
-
-    loadProfile = async (username: string) => {
-        this.loadingProfile = true
-        try {
-            const profile = await axiosAgent.AccountActions.getProfile(username)
-            runInAction(() => { this.profile = profile })
-
-        }
-        catch (error) {
-            console.log(error)
-        }
-        finally {
-            runInAction(() => this.loadingProfile = false)
-        }
-    }
-
-    changeAvatar = async (file: Blob) => {
-        this.uploading = true
-        try {
-            const response = await axiosAgent.AccountActions.changeAvatar(file, this.currentUser!.userID)
-            const photo = response.data;
-            runInAction(() => {
-                if (this.profile) {
-                    this.profile.avatarURL = photo.url
-                }
-
-                if (this.currentUser) {
-                    this.currentUser.avatarURL = photo.url
-                }
-            })
-        }
-        catch (error) {
-            console.log(error)
-        }
-        finally {
-            runInAction(() => this.uploading = false)
         }
     }
 }

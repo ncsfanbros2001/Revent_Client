@@ -9,6 +9,11 @@ interface Props {
 }
 
 const EventGuestList = ({ guests }: Props) => {
+    const styles = {
+        borderColor: 'orange',
+        borderWidth: 2
+    }
+
     return (
         <List horizontal>
             {guests.map((guest) => (
@@ -18,8 +23,12 @@ const EventGuestList = ({ guests }: Props) => {
                     hoverable
                     key={guest.userID}
                     trigger={
-                        <List.Item key={guest.userID} as={Link} to={`/profiles/${guest.username}`}>
-                            <Image size='mini' circular src={guest.avatarURL || '/public/user.png'} />
+                        <List.Item key={guest.userID} as={Link} to={`/profiles/${guest.userID}`}>
+                            <Image
+                                style={guest.following ? styles : null}
+                                size='mini'
+                                circular
+                                src={guest.avatarURL || '/public/user.png'} />
                         </List.Item>
                     }>
                     <Popup.Content>

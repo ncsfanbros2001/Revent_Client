@@ -17,7 +17,7 @@ export const routes: RouteObject[] = [
             { path: 'errors', element: <TestErrors /> },
             { path: 'notFound', element: <NotFound /> },
             { path: 'serverError', element: <ServerError /> },
-            { path: 'profiles/:username', element: <ProfileDetails /> },
+            { path: 'profiles/:userID', element: <ProfileDetails /> },
             { path: '*', element: <Navigate to='/notFound' /> },
         ]
     }

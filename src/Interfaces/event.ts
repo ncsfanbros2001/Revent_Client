@@ -91,8 +91,3 @@ export class EventFormValues {
         }
     }
 }
-
-export interface UpsertEventsModel {
-    eventToUpsert: EventFormValues
-    hostUserID: string
-}

@@ -69,11 +69,11 @@ const EventDetailComment = ({ eventID }: Props) => {
 
                 <Segment>
                     <Comment.Group>
-                        {commentStore.comments.map((comment) => (
+                        {commentStore.comments.length > 0 ? commentStore.comments.map((comment) => (
                             <Comment key={comment.commentID}>
                                 <Comment.Avatar src={comment.avatarURL || '/public/user.png'} />
                                 <Comment.Content>
-                                    <Comment.Author as={Link} to={`/profiles/${comment.username}`}>
+                                    <Comment.Author as={Link} to={`/profiles/${comment.userID}`}>
                                         {comment.fullname}
                                     </Comment.Author>
 
@@ -87,7 +87,9 @@ const EventDetailComment = ({ eventID }: Props) => {
 
                                 </Comment.Content>
                             </Comment>
-                        ))}
+                        )) : (
+                            <Header as='h5' content='Be the first one to comment !' />
+                        )}
                     </Comment.Group>
                 </Segment>
             </Segment>

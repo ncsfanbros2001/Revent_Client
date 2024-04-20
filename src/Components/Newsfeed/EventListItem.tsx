@@ -1,4 +1,4 @@
-import { Button, Icon, Item, Label, Segment } from "semantic-ui-react"
+import { Button, Icon, Item, Label, Segment, Image, Header } from "semantic-ui-react"
 import { EventsModel } from "../../Interfaces/event"
 import { Link } from "react-router-dom"
 import { format } from "date-fns"
@@ -29,7 +29,7 @@ const EventListItem = ({ event }: Props) => {
                         <Item.Content>
                             <Item.Header as={Link} to={`/details/${event.eventID}`}>{event.title}</Item.Header>
                             <Item.Description>
-                                Hosted by <Link to={`/profiles/${event.host?.username}`}>{event.host?.fullname}</Link>
+                                Hosted by <Link to={`/profiles/${event.host?.userID}`}>{event.host?.fullname}</Link>
                             </Item.Description>
                             {
                                 event.isHost && (
@@ -57,12 +57,17 @@ const EventListItem = ({ event }: Props) => {
             </Segment>
 
             <Segment secondary>
+                <Header as='h5' content="Guest List:" color="teal" />
                 <EventGuestList guests={event.guests} />
             </Segment>
 
+            <Image src={'/public/travel.jpg'} />
+
             <Segment clearing>
+                <Button color="blue" floated="left" icon="star outline" content="Care" />
                 <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
             </Segment>
+
         </Segment.Group>
     )
 }

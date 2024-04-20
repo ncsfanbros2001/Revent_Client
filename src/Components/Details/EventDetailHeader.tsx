@@ -44,7 +44,7 @@ const EventDetailHeader = ({ event }: Props) => {
                                 <Header size='huge' content={event.title} style={{ color: 'white' }} />
                                 <p>{format(event.beginTime!, 'dd MMM yyyy h:mm aa')}</p>
                                 <p>
-                                    Hosted by <strong><Link to={`/profiles/${event.host?.username}`}>{event.host?.fullname}</Link></strong>
+                                    Hosted by <strong><Link to={`/profiles/${event.host?.userID}`}>{event.host?.fullname}</Link></strong>
                                 </p>
                             </Item.Content>
                         </Item>

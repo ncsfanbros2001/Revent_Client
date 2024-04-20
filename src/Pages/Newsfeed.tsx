@@ -9,11 +9,11 @@ import EventFilter from "../Components/Newsfeed/EventFilter";
 
 const Newsfeed = () => {
     const { eventStore } = useStore()
-    const { loadAllEvents, loadingInitial, setSelectedEvent, selectedEvent } = eventStore
+    const { loadAllEvents, loadingInitial, clearSelectedEvent, selectedEvent } = eventStore
 
     useEffect(() => {
         if (selectedEvent) {
-            setSelectedEvent(undefined)
+            clearSelectedEvent
         }
         loadAllEvents()
     }, [eventStore]);
