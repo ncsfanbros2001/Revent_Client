@@ -10,11 +10,15 @@ import LoadingComponent from "../Components/Common/LoadingComponent"
 const ProfileDetails = () => {
     const { userID } = useParams()
     const { profileStore } = useStore()
-    const { loadProfile, loadingProfile, profile } = profileStore
+    const { loadProfile, loadingProfile, profile, setActiveTab } = profileStore
 
     useEffect(() => {
         if (userID) {
             loadProfile(userID)
+        }
+
+        return () => {
+            setActiveTab(0)
         }
     }, [loadProfile, userID])
 
@@ -25,7 +29,7 @@ const ProfileDetails = () => {
                 {profile && (
                     <>
                         <ProfileHeader userProfile={profile} />
-                        <ProfileContent userProfile={profile} />
+                        <ProfileContent />
                     </>
                 )}
             </Grid.Column>

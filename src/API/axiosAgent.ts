@@ -5,6 +5,7 @@ import { router } from "../router/Routes";
 import { store } from "../Stores/store";
 import { LoginModel, Profile, RegisterModel, UserModel } from "../Interfaces/user";
 import { Photo } from "../Interfaces/photo";
+import { PaginatedResult } from "../Interfaces/pagination";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -25,8 +26,16 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await delay(0);
-    return response;
+    await delay(1000);
+    const pagination = response.headers["pagination"]
+
+    if (pagination) {
+        response.data = new PaginatedResult(response.data, JSON.parse(pagination))
+        return response as AxiosResponse<PaginatedResult<any>>
+    }
+    else {
+        return response
+    }
 }, (error: AxiosError) => {
     const { data, status, config } = error.response as AxiosResponse;
 
@@ -75,8 +84,8 @@ const request = {
 }
 
 const EventActions = {
-    getAllEvents: () => {
-        return request.get<EventsModel[]>(`/Event`)
+    getAllEvents: (params: URLSearchParams) => {
+        return axios.get<PaginatedResult<EventsModel[]>>(`/Event`, { params }).then(responseBody)
     },
     getOneEvent: (eventId: string) => {
         return request.get<EventsModel>(`/Event/${eventId}`)

@@ -10,11 +10,11 @@ interface Props {
 }
 
 const AvatarCard = ({ userProfile }: Props) => {
-    const { modalStore, userStore } = useStore()
+    const { modalStore, profileStore } = useStore()
     const [changeAvatarMode, setChangeAvatarMode] = useState(false)
 
     const handlePhotoUpload = (file: Blob) => {
-        userStore.changeAvatar(file).then(() => {
+        profileStore.changeAvatar(file).then(() => {
             setChangeAvatarMode(false)
             modalStore.closeModal()
         })
@@ -25,16 +25,16 @@ const AvatarCard = ({ userProfile }: Props) => {
             <Grid verticalAlign="middle" columns={16} centered>
                 <Grid.Row columns={16}>
                     {changeAvatarMode ? (
-                        <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={userStore.uploading} />
+                        <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={profileStore.uploading} />
                     ) : (
                         <Item.Image size='large' src={userProfile.avatarURL || '/public/user.png'} rounded />
                     )}
                 </Grid.Row>
 
                 <Grid.Row columns={16}>
-                    {userStore.isCurrentUser && (
+                    {profileStore.isCurrentUser && (
                         <Button
-                            disabled={userStore.uploading}
+                            disabled={profileStore.uploading}
                             content={changeAvatarMode ? 'Cancel' : 'Change Avatar'}
                             color={changeAvatarMode ? 'orange' : 'blue'}
                             onClick={() => setChangeAvatarMode(!changeAvatarMode)}
@@ -42,7 +42,7 @@ const AvatarCard = ({ userProfile }: Props) => {
                     )}
 
                     <Button
-                        disabled={userStore.uploading}
+                        disabled={profileStore.uploading}
                         content='Exit'
                         color="red"
                         onClick={() => modalStore.closeModal()}
