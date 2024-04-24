@@ -74,6 +74,7 @@ const Login = () => {
                                     </Form>
                                 )}
                             </Formik>
+
                             <Divider horizontal>Or</Divider>
 
                             <Button

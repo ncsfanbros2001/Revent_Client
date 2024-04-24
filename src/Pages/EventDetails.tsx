@@ -4,10 +4,10 @@ import LoadingComponent from '../Components/Common/LoadingComponent';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import EventDetailHeader from '../Components/Details/EventDetailHeader';
-import EventDetailInfo from '../Components/Details/EventDetailInfo';
-import EventDetailComment from '../Components/Details/EventDetailComment';
-import EventDetailGuestList from '../Components/Details/EventDetailGuestList';
+import EventDetailHeader from '../Components/EventDetails/EventDetailHeader';
+import EventDetailInfo from '../Components/EventDetails/EventDetailInfo';
+import EventDetailComment from '../Components/EventDetails/EventDetailComment';
+import EventDetailGuestList from '../Components/EventDetails/EventDetailGuestList';
 
 
 const EventDetails = () => {

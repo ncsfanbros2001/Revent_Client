@@ -15,7 +15,7 @@ const ProfileCard = ({ userProfile }: Props) => {
 
             <Card.Content>
                 <Card.Header>{userProfile.fullname}</Card.Header>
-                <Card.Description>{userProfile.username}</Card.Description>
+                <Card.Description>@{userProfile.username}</Card.Description>
             </Card.Content>
 
             <Card.Content>

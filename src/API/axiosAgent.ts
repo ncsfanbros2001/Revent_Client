@@ -3,7 +3,7 @@ import { EventFormValues, EventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
-import { LoginModel, Profile, RegisterModel, UserModel } from "../Interfaces/user";
+import { IProfile, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import { Photo } from "../Interfaces/photo";
 import { PaginatedResult } from "../Interfaces/pagination";
 
@@ -26,7 +26,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await delay(1000);
+    await delay(0);
     const pagination = response.headers["pagination"]
 
     if (pagination) {
@@ -105,20 +105,26 @@ const EventActions = {
 }
 
 const AccountActions = {
-    getCurrentUser: (userID: string) => {
-        return request.get<UserModel>(`/Account/${userID}`)
+    getCurrentUser: () => {
+        return request.get<UserModel>(`/Account/findUser`)
     },
     login: (loginInfo: LoginModel) => {
         return request.post<UserModel>('/Account/login', loginInfo)
     },
     register: (registerInfo: RegisterModel) => {
         return request.post<UserModel>('/Account/register', registerInfo)
+    },
+    updateProfile: (updateProfileInfo: UpdateProfileModel) => {
+        return request.post<UserModel>('/Account/updateProfile', updateProfileInfo)
+    },
+    updateProfileVisibility: () => {
+        return request.post<void>('/Account/updateProfileVisibility', {})
     }
 }
 
 const ProfileActions = {
     getProfile: (userID: string) => {
-        return request.get<Profile>(`/Profile/${userID}`)
+        return request.get<IProfile>(`/Profile/${userID}`)
     },
     changeAvatar: (file: Blob, userID: string) => {
         let formData = new FormData();
@@ -130,7 +136,7 @@ const ProfileActions = {
         })
     },
     listFollowings: (userID: string, predicate: string) => {
-        return request.get<Profile[]>(`/follow/${userID}?predicate=${predicate}`)
+        return request.get<IProfile[]>(`/follow/${userID}?predicate=${predicate}`)
     },
     updateFollowing: (userID: string) => {
         return request.post(`/follow/${userID}`, {})

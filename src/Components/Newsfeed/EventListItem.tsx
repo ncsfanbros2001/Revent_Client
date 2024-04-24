@@ -64,7 +64,13 @@ const EventListItem = ({ event }: Props) => {
             <Image src={'/public/travel.jpg'} />
 
             <Segment clearing>
-                <Button color="blue" floated="left" icon="star outline" content="Care" />
+                <Button as='div' labelPosition='right'>
+                    <Button color='blue' icon='star outline' content='Care' />
+                    <Label basic color='blue' pointing='left'>
+                        2,048
+                    </Label>
+                </Button>
+
                 <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
             </Segment>
 

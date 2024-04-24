@@ -1,13 +1,13 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
-import { Profile } from "../Interfaces/user";
+import { IProfile } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
 
 export default class ProfileStore {
-    profile: Profile | null = null
+    profile: IProfile | null = null
     loadingProfile: boolean = false
     uploading: boolean = false
-    followings: Profile[] = []
+    followings: IProfile[] = []
     loadingFollowings: boolean = false
     loadingUpdateFollowing: boolean = false
     activeTab = 0;
@@ -27,6 +27,10 @@ export default class ProfileStore {
                 }
             }
         )
+    }
+
+    clearUserProfile = () => {
+        this.profile = null
     }
 
     setActiveTab = (activeTab: number) => {

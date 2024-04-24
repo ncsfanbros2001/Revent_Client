@@ -2,15 +2,21 @@ import { Tab } from "semantic-ui-react"
 import { observer } from "mobx-react-lite"
 import ProfileFollowings from "./ProfileFollowings"
 import { useStore } from "../../Stores/store"
+import ProfileAbout from "./ProfileAbout"
+import { IProfile } from "../../Interfaces/user"
 
-const ProfileContent = () => {
+interface Props {
+    userProfile: IProfile
+}
+
+const ProfileContent = ({ userProfile }: Props) => {
     const { profileStore } = useStore()
 
     const profileTabs = [
-        { menuItem: "About", render: () => <Tab.Pane>About</Tab.Pane> },
+        { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> },
         { menuItem: "Events", render: () => <Tab.Pane>Events</Tab.Pane> },
         { menuItem: "Followers", render: () => <ProfileFollowings /> },
-        { menuItem: "Following", render: () => <ProfileFollowings /> }
+        { menuItem: "Following", render: () => <ProfileFollowings /> },
     ]
 
     return (

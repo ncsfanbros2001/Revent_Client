@@ -20,7 +20,7 @@ const ProfileDetails = () => {
         return () => {
             setActiveTab(0)
         }
-    }, [loadProfile, userID])
+    }, [userID])
 
     if (loadingProfile) return <LoadingComponent content="Loading profile..." />
     return (
@@ -29,7 +29,7 @@ const ProfileDetails = () => {
                 {profile && (
                     <>
                         <ProfileHeader userProfile={profile} />
-                        <ProfileContent />
+                        <ProfileContent userProfile={profile} />
                     </>
                 )}
             </Grid.Column>

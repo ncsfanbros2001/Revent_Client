@@ -8,11 +8,13 @@ import EventFilter from "../Components/Newsfeed/EventFilter";
 import { PagingParams } from "../Interfaces/pagination";
 import InfiniteScroll from "react-infinite-scroller";
 import EventItemPlaceholder from "../Components/Newsfeed/EventItemPlaceholder";
+import LoadingComponent from "../Components/Common/LoadingComponent";
 
 const Newsfeed = () => {
-    const { eventStore } = useStore()
+    const { eventStore, profileStore } = useStore()
     const { loadAllEvents, loadingInitial, clearSelectedEvent, selectedEvent, setPagingParams, pagination,
         eventListRegistry } = eventStore
+    const { profile, clearUserProfile } = profileStore
     const [loadingNext, setLoadingNext] = useState(false)
 
     const handleGetNext = () => {
@@ -26,8 +28,16 @@ const Newsfeed = () => {
         if (selectedEvent) {
             clearSelectedEvent()
         }
+        if (profile) {
+            clearUserProfile()
+        }
+
         loadAllEvents()
     }, [eventStore]);
+
+    if (loadingInitial && !loadingNext && eventListRegistry.size === 0) {
+        return (<LoadingComponent />)
+    }
 
     return (
         <Grid>

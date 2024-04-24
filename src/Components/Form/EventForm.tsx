@@ -43,8 +43,7 @@ const EventForm = (props: Props) => {
     }, [selectedEvent])
 
     const handleFormSubmit = (event: EventFormValues) => {
-        selectedEvent ? updateEvent(event)
-            .then(() => router.navigate(`/details/${event.eventID}`)) : createEvent(event);
+        selectedEvent ? updateEvent(event) : createEvent(event).then(() => router.navigate(`/details/${event.eventID}`));
 
         modalStore.closeModal()
     }
@@ -53,7 +52,7 @@ const EventForm = (props: Props) => {
 
     return (
         <Segment clearing>
-            <Header as='h1' color="teal" content={selectedEvent ? 'Update Event' : 'Create Event'} />
+            <Header as='h1' color="blue" content={selectedEvent ? 'Update Event' : 'Create Event'} />
             <Formik
                 enableReinitialize={true}
                 initialValues={eventInfo}

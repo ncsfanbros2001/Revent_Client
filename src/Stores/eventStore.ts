@@ -4,9 +4,9 @@ import axiosAgent from "../API/axiosAgent";
 import { format } from "date-fns";
 import { v4 as uuid } from 'uuid'
 import { store } from "./store";
-import { Profile } from "../Interfaces/user";
 import { EventStatus } from "../Utilities/staticValues";
 import { Pagination, PagingParams } from "../Interfaces/pagination";
+import { Profile } from "../Interfaces/user";
 
 export default class EventStore {
     eventListRegistry = new Map<string, EventsModel>() //<key: id of an event, value: the event itself>
@@ -175,7 +175,9 @@ export default class EventStore {
     createEvent = async (event: EventFormValues) => {
         this.setLoadingInitial(true)
 
-        const user = store.userStore.currentUser
+        const userID = store.userStore.currentUser?.userID
+        const user = await axiosAgent.ProfileActions.getProfile(userID!)
+
         const guests = new Profile(user!)
 
         try {
@@ -248,17 +250,18 @@ export default class EventStore {
 
     updateAttendance = async () => {
         this.loading = true
-        const user = store.userStore.currentUser
+        const userID = store.userStore.currentUser?.userID
+        const user = await axiosAgent.ProfileActions.getProfile(userID!)
 
         try {
             await axiosAgent.EventActions.attendEvent(this.selectedEvent!.eventID)
             runInAction(() => {
-                if (this.selectedEvent?.isGoing) {
+                if (this.selectedEvent?.isGoing) { // Cancel attendance
                     this.selectedEvent.guests = this.selectedEvent.guests
                         .filter(x => x.userID !== user?.userID)
                     this.selectedEvent.isGoing = false
                 }
-                else {
+                else { // Attend event
                     const guest = new Profile(user!)
                     this.selectedEvent!.guests.push(guest)
                     this.selectedEvent!.isGoing = true

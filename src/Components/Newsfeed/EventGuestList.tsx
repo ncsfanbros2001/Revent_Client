@@ -1,11 +1,11 @@
 import { observer } from "mobx-react-lite"
 import { List, Image, Popup } from "semantic-ui-react"
-import { Profile } from "../../Interfaces/user"
+import { IProfile } from "../../Interfaces/user"
 import { Link } from "react-router-dom"
 import ProfileCard from "../Profile/ProfileCard"
 
 interface Props {
-    guests: Profile[]
+    guests: IProfile[]
 }
 
 const EventGuestList = ({ guests }: Props) => {

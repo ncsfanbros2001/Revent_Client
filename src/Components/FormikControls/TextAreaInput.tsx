@@ -1,5 +1,5 @@
 import { useField } from "formik"
-import { Form } from "semantic-ui-react"
+import { Form, TextArea } from "semantic-ui-react"
 import ErrorText from "./ErrorText"
 
 interface Props {
@@ -16,7 +16,7 @@ const TextAreaInput = (props: Props) => {
     return (
         <Form.Field error={meta.touched && !!meta.error}>
             <label htmlFor={props.name} className="label">{props.label}</label>
-            <textarea {...field} {...props} />
+            <TextArea {...field} {...props} />
             {meta.touched && meta.error && (<ErrorText error={meta.error} />)}
         </Form.Field>
     )
