@@ -1,5 +1,4 @@
 import { Formik, Form } from "formik"
-import { useState } from "react"
 import { UpdateProfileModel } from "../../Interfaces/user"
 import { observer } from "mobx-react-lite"
 import { useStore } from "../../Stores/store"
@@ -9,11 +8,10 @@ import DateInput from "../FormikControls/DateInput"
 import SelectInput from "../FormikControls/SelectInput"
 import { genderOptions } from "../../Utilities/dropdownOptions"
 import TextAreaInput from "../FormikControls/TextAreaInput"
-import { Button, Segment } from "semantic-ui-react"
+import { Button, Header, Segment } from "semantic-ui-react"
 
 const UpdateProfileForm = () => {
     const { userStore, modalStore, profileStore } = useStore()
-    const [userProfile, _] = useState<UpdateProfileModel>(new UpdateProfileModel(profileStore.profile!))
 
     const validationSchema = Yup.object({
         fullname: Yup.string().required('Fullname cannot be empty'),
@@ -27,8 +25,9 @@ const UpdateProfileForm = () => {
 
     return (
         <Segment clearing>
+            <Header as='h1' color="blue" content='Update Profile' />
             <Formik
-                initialValues={userProfile}
+                initialValues={new UpdateProfileModel(profileStore.profile!)}
                 onSubmit={(values) => userStore.updateProfile(values).then(() => modalStore.closeModal())}
                 validationSchema={validationSchema}>
                 {

@@ -1,14 +1,16 @@
 import { ErrorMessage, Form, Formik } from 'formik';
-import { Container, Grid, Header, Segment, Divider, Button, Label } from 'semantic-ui-react';
+import { Container, Grid, Header, Segment, Divider, Button, Label, Checkbox } from 'semantic-ui-react';
 import '../Stylesheets/Login&Register.css'
 import '../Stylesheets/Formik.css'
 import TextInput from '../Components/FormikControls/TextInput';
 import { useStore } from '../Stores/store';
 import { observer } from 'mobx-react-lite';
 import RegisterForm from '../Components/Form/RegisterForm';
+import { useState } from 'react';
 
 const Login = () => {
     const { userStore, modalStore } = useStore()
+    const [passwordHidden, setPasswordHidden] = useState(true)
 
     return (
         <Container id='content_container'>
@@ -53,7 +55,7 @@ const Login = () => {
                                         <TextInput
                                             name='password'
                                             placeholder='Password'
-                                            type='password' />
+                                            type={passwordHidden ? "password" : "text"} />
 
                                         <ErrorMessage
                                             name='error'
@@ -65,6 +67,7 @@ const Login = () => {
                                                     content={errors.error} />
                                             )} />
 
+                                        <Checkbox label='Show Password' onChange={() => setPasswordHidden(!passwordHidden)} />
                                         <Button
                                             loading={isSubmitting}
                                             type='submit'

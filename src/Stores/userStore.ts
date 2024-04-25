@@ -1,9 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
+import { ChangePasswordModel, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
 import { router } from "../router/Routes";
 import { Visibility } from "../Utilities/staticValues";
+import { toast } from "react-toastify";
 
 export default class UserStore {
     currentUser: UserModel | null = null
@@ -86,6 +87,16 @@ export default class UserStore {
                     }
                 }
             })
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+    changePassword = async (changePasswordInfo: ChangePasswordModel) => {
+        try {
+            await axiosAgent.AccountActions.changePassword(changePasswordInfo)
+            toast.success("Change Password Successfully")
         }
         catch (error) {
             console.log(error);

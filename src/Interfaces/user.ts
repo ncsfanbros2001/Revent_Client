@@ -24,6 +24,12 @@ export interface LoginModel { // For logging in
     password: string
 }
 
+export interface ChangePasswordModel { // For logging in
+    oldPassword: string
+    newPassword: string
+    confirmPassword: string
+}
+
 export interface IProfile {
     userID: string
     email: string

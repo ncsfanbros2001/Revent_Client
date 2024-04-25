@@ -1,4 +1,4 @@
-import { Button, Checkbox, Container, Grid, Header, List, Message, Segment, Tab } from "semantic-ui-react"
+import { Button, Checkbox, Container, Divider, Grid, Header, List, Message, Segment, Tab } from "semantic-ui-react"
 import { useStore } from "../../Stores/store"
 import UpdateProfileForm from "../Form/UpdateProfileForm"
 import { format } from "date-fns"
@@ -6,6 +6,7 @@ import { IProfile } from "../../Interfaces/user"
 import { observer } from "mobx-react-lite"
 import { Fragment } from "react/jsx-runtime"
 import { Visibility } from "../../Utilities/staticValues"
+import ChangePasswordForm from "../Form/ChangePasswordForm"
 
 interface Props {
     userProfile: IProfile
@@ -53,30 +54,38 @@ const ProfileAbout = ({ userProfile }: Props) => {
             {
                 userProfile.userID === userStore.currentUser?.userID &&
                 (
-                    <Grid>
-                        <Grid.Row verticalAlign="middle">
-                            <Grid.Column width={11} floated="left">
-                                <Button
-                                    icon='user circle'
-                                    disabled={checkLastUpdate}
-                                    content={!checkLastUpdate ? 'Manage Profile'
-                                        : `You can update again on ${format(nextUpdateDate, "dd/MM/yyyy")}`}
-                                    color="blue"
-                                    onClick={() => modalStore.openModal(<UpdateProfileForm />)} />
-                            </Grid.Column>
+                    <Fragment>
+                        <Divider />
+                        <Grid>
+                            <Grid.Row verticalAlign="middle">
+                                <Grid.Column width={11} floated="left">
+                                    <Button
+                                        icon='user circle'
+                                        disabled={checkLastUpdate}
+                                        content={!checkLastUpdate ? 'Manage Profile'
+                                            : `You can update again on ${format(nextUpdateDate, "dd/MM/yyyy")}`}
+                                        color="blue"
+                                        onClick={() => modalStore.openModal(<UpdateProfileForm />)} />
+                                    <Button
+                                        icon='edit'
+                                        content='Change Password'
+                                        color='teal'
+                                        onClick={() => modalStore.openModal(<ChangePasswordForm />)} />
+                                </Grid.Column>
 
-                            <Grid.Column width={5} floated="right">
-                                <Checkbox
-                                    toggle
-                                    label={'Publicity Mode: ' + userProfile.profileVisibility}
-                                    defaultChecked={userProfile.profileVisibility === Visibility.Public}
-                                    onChange={() => updateProfileVisibility()} />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                                <Grid.Column width={5} floated="right">
+                                    <Checkbox
+                                        toggle
+                                        label={'Publicity Mode: ' + userProfile.profileVisibility}
+                                        defaultChecked={userProfile.profileVisibility === Visibility.Public}
+                                        onChange={() => updateProfileVisibility()} />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Fragment>
                 )
             }
-        </Tab.Pane >
+        </Tab.Pane>
     )
 }
 

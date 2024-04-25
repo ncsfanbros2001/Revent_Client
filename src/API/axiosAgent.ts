@@ -3,7 +3,7 @@ import { EventFormValues, EventsModel } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
-import { IProfile, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
+import { ChangePasswordModel, IProfile, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import { Photo } from "../Interfaces/photo";
 import { PaginatedResult } from "../Interfaces/pagination";
 
@@ -58,10 +58,10 @@ axios.interceptors.response.use(async (response) => {
             }
             break
         case 401:
-            toast.error('Unauthorized')
+            toast.error(data)
             break
         case 403:
-            toast.error('Forbidden')
+            toast.error(data)
             break
         case 404:
             router.navigate('/notFound')
@@ -119,6 +119,9 @@ const AccountActions = {
     },
     updateProfileVisibility: () => {
         return request.post<void>('/Account/updateProfileVisibility', {})
+    },
+    changePassword: (changePasswordInfo: ChangePasswordModel) => {
+        return request.post<void>('/Account/changePassword', changePasswordInfo)
     }
 }
 
