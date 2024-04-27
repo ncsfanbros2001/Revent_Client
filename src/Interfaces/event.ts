@@ -1,3 +1,4 @@
+import { Care } from "./care"
 import { IProfile } from "./user"
 
 export interface IEventsModel {
@@ -19,6 +20,9 @@ export interface IEventsModel {
     isHost: boolean
     host?: IProfile
     guests: IProfile[]
+    cares: Care[],
+    careCount: number,
+    isCaring: boolean
 }
 
 export class EventsModel implements IEventsModel {
@@ -56,6 +60,9 @@ export class EventsModel implements IEventsModel {
     isHost: boolean = false
     host?: IProfile
     guests: IProfile[] = []
+    cares: Care[] = []
+    careCount: number = 0
+    isCaring: boolean = false
 }
 
 export class EventFormValues {

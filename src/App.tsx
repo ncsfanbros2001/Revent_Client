@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import Login from "./Pages/Login";
 import { useStore } from "./Stores/store";
 import LoadingComponent from "./Components/Common/LoadingComponent";
+import ConfirmModal from "./Components/Common/ConfirmModal";
 
 const App = () => {
     const location = useLocation()
@@ -16,9 +17,8 @@ const App = () => {
     const { commonStore, userStore } = useStore()
 
     useEffect(() => {
-        if (commonStore.token || !userStore.currentUser) {
+        if (commonStore.token && !userStore.currentUser) {
             userStore.getUser().finally(() => commonStore.setAppLoaded())
-            commonStore.setAppLoaded()
         }
         else {
             commonStore.setAppLoaded()
@@ -31,7 +31,8 @@ const App = () => {
         <Fragment>
             <ToastContainer position="bottom-right" theme="colored" />
             <ModalContainer />
-            {location.pathname === '/' && !commonStore.token ? (<Login />) : (
+            <ConfirmModal />
+            {location.pathname === '/' && !userStore.isLoggedIn ? (<Login />) : (
                 <>
                     <Navbar />
                     <Container style={{ marginTop: "6em" }}>

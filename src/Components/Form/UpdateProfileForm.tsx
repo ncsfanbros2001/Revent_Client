@@ -12,14 +12,21 @@ import { Button, Header, Segment } from "semantic-ui-react"
 
 const UpdateProfileForm = () => {
     const { userStore, modalStore, profileStore } = useStore()
+    const ageValidator = new Date().setFullYear(new Date().getFullYear() - 16)
+    const phoneNumberValidator = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
 
     const validationSchema = Yup.object({
         fullname: Yup.string().required('Fullname cannot be empty'),
         username: Yup.string().required('Username cannot be empty'),
-        phoneNumber: Yup.number().required('Phone Number cannot be empty'),
+        phoneNumber: Yup.string()
+            .required('Phone Number cannot be empty')
+            .matches(phoneNumberValidator,
+                "This is not a valid phone number"),
         gender: Yup.string().required('Gender cannot be empty'),
         address: Yup.string().required('Address cannot be empty'),
-        birthDate: Yup.string().required('Birth Date cannot be empty'),
+        birthDate: Yup.date()
+            .required('Birth date is required')
+            .max(new Date(ageValidator), 'You must be 16 years or older'),
         biography: Yup.string().required('Biography cannot be empty')
     })
 

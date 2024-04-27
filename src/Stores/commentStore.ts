@@ -2,6 +2,7 @@ import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signal
 import { ChatComment } from "../Interfaces/comment";
 import { makeAutoObservable, runInAction } from "mobx";
 import { store } from "./store";
+import { toast } from "react-toastify";
 
 export default class CommentStore {
     comments: ChatComment[] = []
@@ -49,7 +50,7 @@ export default class CommentStore {
             await this.hubConnection?.invoke("SendComment", values)
         }
         catch (error) {
-            console.log(error);
+            toast.error("Error add comment")
         }
     }
 }

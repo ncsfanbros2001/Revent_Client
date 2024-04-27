@@ -29,6 +29,10 @@ const EventDetailHeader = ({ event }: Props) => {
     const { modalStore, eventStore } = useStore();
     const { updateAttendance, loading, selectedEvent, cancelEvent } = eventStore
 
+    const handleCancelEvent = () => {
+        cancelEvent().then(modalStore.closeConfirmation)
+    }
+
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{ padding: '0' }}>
@@ -53,6 +57,21 @@ const EventDetailHeader = ({ event }: Props) => {
             </Segment>
             <Segment clearing attached='bottom'>
                 {
+                    !event.isHost && (
+                        <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled}>
+                            <Button
+                                color={event.isCaring ? 'blue' : 'teal'}
+                                icon={event.isCaring ? 'star' : 'star outline'}
+                                content='Care'
+                                onClick={() => eventStore.careToEvent(event.eventID)} />
+                            <Label basic color='blue' pointing='left'>
+                                {event.careCount}
+                            </Label>
+                        </Button>
+                    )
+                }
+
+                {
                     event.isHost ? (
                         <Fragment>
                             <Button
@@ -60,7 +79,11 @@ const EventDetailHeader = ({ event }: Props) => {
                                 floated='left'
                                 basic={event.status === EventStatus.Cancelled}
                                 disabled={event.status === EventStatus.Cancelled}
-                                onClick={() => cancelEvent()} loading={loading}>
+                                onClick={() => {
+                                    modalStore.triggerConfirmation(
+                                        "Are you sure you want to cancel this event ?", handleCancelEvent)
+                                }}
+                                loading={loading}>
                                 {event.status === EventStatus.Cancelled ? 'Event Cancelled' : 'Cancel Event'}
                             </Button>
                             <Button

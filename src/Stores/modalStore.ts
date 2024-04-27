@@ -5,10 +5,23 @@ interface Modal {
     body: JSX.Element | null
 }
 
+interface ConfirmBoxModal {
+    isOpen: boolean;
+    content: string | null
+    method: (() => void) | null;
+}
+
+
 export default class ModalStore {
     modal: Modal = {
         open: false,
         body: null
+    }
+
+    confirmModal: ConfirmBoxModal = {
+        isOpen: false,
+        content: null,
+        method: null
     }
 
     constructor() {
@@ -23,5 +36,17 @@ export default class ModalStore {
     closeModal = () => {
         this.modal.open = false
         this.modal.body = null
+    }
+
+    triggerConfirmation = (content: string, method: () => void) => {
+        this.confirmModal.isOpen = true
+        this.confirmModal.content = content
+        this.confirmModal.method = method
+    }
+
+    closeConfirmation = () => {
+        this.confirmModal.isOpen = false
+        this.confirmModal.content = null
+        this.confirmModal.method = null
     }
 }

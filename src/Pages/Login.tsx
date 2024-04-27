@@ -6,11 +6,27 @@ import TextInput from '../Components/FormikControls/TextInput';
 import { useStore } from '../Stores/store';
 import { observer } from 'mobx-react-lite';
 import RegisterForm from '../Components/Form/RegisterForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 const Login = () => {
     const { userStore, modalStore } = useStore()
     const [passwordHidden, setPasswordHidden] = useState(true)
+    const [failedLoginAttempt, setFailedLoginAttempt] = useState(0)
+    const [loginLocked, setLoginLocked] = useState(false)
+    const [loginDisabledUntil, _] = useState(Number(localStorage.getItem('loginDisabledUntil')))
+    const [labelHidden, setLabelHidden] = useState(true)
+
+    useEffect(() => {
+        if (new Date(loginDisabledUntil) > new Date()) {
+            setLoginLocked(true)
+            setLabelHidden(false)
+        }
+        else {
+            setLoginLocked(false)
+            localStorage.removeItem('loginDisabledUntil')
+        }
+    }, [loginDisabledUntil])
 
     return (
         <Container id='content_container'>
@@ -42,7 +58,19 @@ const Login = () => {
                                 }
                                 onSubmit={
                                     async (values, { setErrors }) => {
-                                        return await userStore.login(values).catch(() => setErrors({ error: "Invalid credentials" }))
+                                        return await userStore.login(values)
+                                            .catch(() => {
+                                                setErrors({ error: "Incorrect credentials" })
+                                                setFailedLoginAttempt(failedLoginAttempt + 1)
+
+                                                if (failedLoginAttempt === 4) {
+                                                    const lockUntil = new Date().setMinutes(new Date().getMinutes() + 1).toString()
+
+                                                    localStorage.setItem("loginDisabledUntil", lockUntil)
+                                                    setLoginLocked(true)
+                                                    setErrors({ error: `Too many failed login attempt, please wait until ${format(new Date(Number(lockUntil)), 'p')} to login again` })
+                                                }
+                                            })
                                     }
                                 }>
 
@@ -50,12 +78,14 @@ const Login = () => {
                                     <Form className="ui form" onSubmit={handleSubmit} autoComplete='off'>
                                         <TextInput
                                             name='email'
-                                            placeholder='Email' />
+                                            placeholder='Email'
+                                            disabled={loginLocked} />
 
                                         <TextInput
                                             name='password'
                                             placeholder='Password'
-                                            type={passwordHidden ? "password" : "text"} />
+                                            type={passwordHidden ? "password" : "text"}
+                                            disabled={loginLocked} />
 
                                         <ErrorMessage
                                             name='error'
@@ -67,13 +97,29 @@ const Login = () => {
                                                     content={errors.error} />
                                             )} />
 
-                                        <Checkbox label='Show Password' onChange={() => setPasswordHidden(!passwordHidden)} />
+                                        {
+                                            loginLocked && loginDisabledUntil && !labelHidden && (
+                                                <Label
+                                                    style={{ marginBottom: 10, width: '100%', textAlign: 'center' }}
+                                                    basic
+                                                    color='red'
+                                                    content={`Too many failed attempt, please wait 
+                                                        until ${format(new Date(loginDisabledUntil), 'p')} to try again`} />
+                                            )
+                                        }
+
+                                        <Checkbox
+                                            label='Show Password'
+                                            disabled={loginLocked}
+                                            onChange={() => setPasswordHidden(!passwordHidden)} />
+
                                         <Button
                                             loading={isSubmitting}
                                             type='submit'
                                             className='buttonControls'
                                             color='green'
-                                            content='Login' />
+                                            content='Login'
+                                            disabled={loginLocked} />
                                     </Form>
                                 )}
                             </Formik>

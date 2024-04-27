@@ -7,14 +7,14 @@ const DateInput = (props: Partial<ReactDatePickerProps>) => { // Make everything
     const [field, meta, helpers] = useField(props.name!)
 
     return (
-        <Form.Field error={meta.touched && !!meta.error}>
+        <Form.Field error={!!meta.error && meta.value}>
             <DatePicker
                 {...field}
                 {...props}
                 selected={(field.value) && new Date(field.value) || null}
                 onChange={(value) => helpers.setValue(value)}
             />
-            {meta.touched && meta.error && (<ErrorText error={meta.error} />)}
+            {meta.error && meta.value && (<ErrorText error={meta.error} />)}
         </Form.Field>
     )
 }

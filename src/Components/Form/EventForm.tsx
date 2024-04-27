@@ -24,16 +24,22 @@ const EventForm = (props: Props) => {
 
     const [eventInfo, setEventInfo] = useState<EventFormValues>(new EventFormValues())
 
-    const validationSchema = Yup.object({
+    const validationSchema = Yup.object().shape({
         title: Yup.string().required('Title is required'),
         wallpaper: Yup.string().required('Wallpaper is required'),
         location: Yup.string().required('Location is required'),
-        beginTime: Yup.string().required('Begin Time is required'),
-        endTime: Yup.string().required('End Time is required'),
+        beginTime: Yup.date()
+            .required('Begin Time is required')
+            .min(Yup.ref('attendDeadline'), 'Begin time must be greater than attend deadline'),
+        endTime: Yup.date()
+            .required('End Time is required')
+            .min(Yup.ref('beginTime'), 'End time must be greater than begin time'),
         category: Yup.string().required('Category is required'),
         description: Yup.string().required('Description is required'),
         publicity: Yup.string().required('Publicity is required'),
-        attendDeadline: Yup.string().required('Attend Deadline is required')
+        attendDeadline: Yup.date()
+            .required('Attend Deadline is required')
+            .min(new Date(), "Attend Deadline must be in the future")
     })
 
     useEffect(() => {
@@ -43,7 +49,8 @@ const EventForm = (props: Props) => {
     }, [selectedEvent])
 
     const handleFormSubmit = (event: EventFormValues) => {
-        selectedEvent ? updateEvent(event) : createEvent(event).then(() => router.navigate(`/details/${event.eventID}`));
+        selectedEvent ? updateEvent(event) :
+            createEvent(event).then(() => router.navigate(`/details/${event.eventID}`));
 
         modalStore.closeModal()
     }
@@ -74,6 +81,13 @@ const EventForm = (props: Props) => {
                                 placeholder='Location' />
 
                             <DateInput
+                                name='attendDeadline'
+                                placeholderText='Attend Deadline'
+                                showTimeSelect
+                                timeCaption='time'
+                                dateFormat='MMMM d, yyyy h:mm aa' />
+
+                            <DateInput
                                 name='beginTime'
                                 placeholderText='Begin Time'
                                 showTimeSelect
@@ -101,13 +115,6 @@ const EventForm = (props: Props) => {
                                 name='publicity'
                                 placeholder='Publictiy'
                                 options={publicityOptions} />
-
-                            <DateInput
-                                name='attendDeadline'
-                                placeholderText='Attend Deadline'
-                                showTimeSelect
-                                timeCaption='time'
-                                dateFormat='MMMM d, yyyy h:mm aa' />
 
 
 

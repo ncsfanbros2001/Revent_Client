@@ -77,7 +77,7 @@ export class Profile implements IProfile { // For user details
 
     followersCount: number = 0
     followingCount: number = 0
-    following: boolean = true
+    following: boolean = false
 }
 
 export class UpdateProfileModel { // For updating user info

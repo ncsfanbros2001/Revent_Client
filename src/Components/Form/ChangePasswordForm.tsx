@@ -9,11 +9,17 @@ import { useState } from "react"
 const ChangePasswordForm = () => {
     const { userStore, modalStore } = useStore()
     const [passwordHidden, setPasswordHidden] = useState(true)
+    const newPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 
     const validationSchema = Yup.object({
         oldPassword: Yup.string().required('Old Password cannot be empty'),
-        newPassword: Yup.string().required('New Password cannot be empty'),
-        confirmPassword: Yup.string().required('Confirm Password cannot be empty')
+        newPassword: Yup.string()
+            .required('New Password cannot be empty')
+            .matches(newPasswordRegex,
+                "Password must contain at least 8 characters, one uppercase, one number and one special character"),
+        confirmPassword: Yup.string()
+            .required('Confirm Password cannot be empty')
+            .oneOf([Yup.ref('newPassword')], 'Passwords must match')
     })
 
     return (

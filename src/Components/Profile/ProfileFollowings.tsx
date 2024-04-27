@@ -21,7 +21,7 @@ const ProfileFollowings = () => {
                 <Grid.Column width={16}>
                     <Card.Group itemsPerRow={5}>
                         {followings.map((profile) => (
-                            <ProfileCard key={profile.username} userProfile={profile} />
+                            <ProfileCard key={profile.userID} userProfile={profile} />
                         ))}
                     </Card.Group>
                 </Grid.Column>

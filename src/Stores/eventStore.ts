@@ -7,6 +7,8 @@ import { store } from "./store";
 import { EventStatus } from "../Utilities/staticValues";
 import { Pagination, PagingParams } from "../Interfaces/pagination";
 import { Profile } from "../Interfaces/user";
+import { toast } from "react-toastify";
+import { Care } from "../Interfaces/care";
 
 export default class EventStore {
     eventListRegistry = new Map<string, EventsModel>() //<key: id of an event, value: the event itself>
@@ -127,6 +129,7 @@ export default class EventStore {
             event.isGoing = event.guests!.some(a => a.userID.toLowerCase() === user.userID.toLowerCase())
             event.isHost = event.hostUserID.toLowerCase() === user.userID.toLowerCase()
             event.host = event.guests?.find(x => x.userID.toLowerCase() === event.hostUserID.toLowerCase())
+            event.isCaring = event.cares.some(x => x.userID.toLowerCase() === user.userID.toLowerCase())
         }
 
         runInAction(() => {
@@ -218,6 +221,8 @@ export default class EventStore {
                     this.setSelectedEvent(updatedEvent as EventsModel)
                 }
             })
+
+            toast.success("Update Event Successfully")
         }
         catch (error) {
             console.log("Update event failed", error)
@@ -226,7 +231,6 @@ export default class EventStore {
             this.setLoadingInitial(false)
         }
     }
-
 
     deleteEvent = async (eventID: string) => {
         this.loading = true
@@ -303,5 +307,29 @@ export default class EventStore {
                 }
             })
         });
+    }
+
+    careToEvent = async (eventID: string) => {
+        try {
+            axiosAgent.InteractActions.careToggle(eventID)
+
+            const user = store.userStore.currentUser!
+            const eventToUpdate = this.eventListRegistry.get(eventID)!
+
+            if (eventToUpdate?.isCaring === false) {
+                eventToUpdate.careCount++
+                eventToUpdate.cares.push(new Care(user))
+                eventToUpdate.isCaring = true
+            }
+            else {
+                eventToUpdate.careCount--
+                eventToUpdate.cares.filter(x => x.userID === user?.userID)
+                eventToUpdate.isCaring = false
+            }
+            this.eventListRegistry.set(eventToUpdate.eventID, eventToUpdate)
+
+        } catch (error) {
+            toast.error("Error With Care")
+        }
     }
 }

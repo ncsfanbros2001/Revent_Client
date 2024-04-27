@@ -57,12 +57,6 @@ axios.interceptors.response.use(async (response) => {
                 toast.error(data)
             }
             break
-        case 401:
-            toast.error(data)
-            break
-        case 403:
-            toast.error(data)
-            break
         case 404:
             router.navigate('/notFound')
             break
@@ -146,8 +140,14 @@ const ProfileActions = {
     }
 }
 
+const InteractActions = {
+    careToggle: (eventID: string) => {
+        return request.post<void>(`/Interact/${eventID}`, {})
+    }
+}
+
 const axiosAgent = {
-    EventActions, AccountActions, ProfileActions
+    EventActions, AccountActions, ProfileActions, InteractActions
 }
 
 export default axiosAgent;

@@ -12,6 +12,8 @@ import DateInput from '../FormikControls/DateInput';
 
 const RegisterForm = () => {
     const { userStore, modalStore } = useStore()
+    const ageValidator = new Date().setFullYear(new Date().getFullYear() - 16)
+    const phoneNumberValidator = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
 
     return (
         <Segment clearing>
@@ -48,14 +50,18 @@ const RegisterForm = () => {
                 validationSchema={Yup.object({
                     fullname: Yup.string().required('Full name is required'),
                     username: Yup.string().required('Username is required'),
-                    email: Yup.string().email('Invalid Email Format').required('Email is required'),
-                    phoneNumber: Yup.number().required('Phone number is required'),
+                    email: Yup.string()
+                        .email('Invalid Email Format')
+                        .required('Email is required'),
+                    phoneNumber: Yup.string()
+                        .matches(phoneNumberValidator,
+                            "This is not a valid phone number")
+                        .required('Phone number is required'),
                     gender: Yup.string().required('Gender is required'),
                     address: Yup.string().required('Address is required'),
-                    birthDate: Yup.string().required('Birth date is required'),
-                    password: Yup.string().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,}$/, "Your password isn't strong enough")
-                        .required('Password is required'),
-                    confirmPassword: Yup.string().oneOf([Yup.ref('password')], 'Your passwords does not match.')
+                    birthDate: Yup.date()
+                        .required('Birth date is required')
+                        .max(new Date(ageValidator), 'You must be 16 years or older'),
                 })}>
 
                 {({ handleSubmit, isSubmitting, errors, dirty, isValid }) => (
@@ -91,16 +97,6 @@ const RegisterForm = () => {
                             showTimeSelect
                             timeCaption='time'
                             dateFormat='MMMM d, yyyy' />
-
-                        <TextInput
-                            name='password'
-                            placeholder='Password'
-                            type='password' />
-
-                        <TextInput
-                            name='confirmPassword'
-                            placeholder='Confirm Password'
-                            type='password' />
 
                         <ErrorMessage
                             name='error'

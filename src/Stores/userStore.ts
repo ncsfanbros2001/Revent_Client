@@ -13,6 +13,10 @@ export default class UserStore {
         makeAutoObservable(this)
     }
 
+    get isLoggedIn() {
+        return !!this.currentUser
+    }
+
     get checkLastUpdate() {
         const updateDate = new Date(this.currentUser!.updatedAt!)
         updateDate.setDate(updateDate.getDate() + 90)

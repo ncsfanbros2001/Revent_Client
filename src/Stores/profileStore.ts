@@ -90,19 +90,27 @@ export default class ProfileStore {
             await axiosAgent.ProfileActions.updateFollowing(userID)
             store.eventStore.updateGuestFollowing(userID)
 
+            const profile = this.profile
+            const currentUser = store.userStore.currentUser
+
             runInAction(() => {
-                if (this.profile && this.profile.userID !== store.userStore.currentUser?.userID && this.profile.userID !== userID) {
-                    following ? this.profile.followersCount++ : this.profile.followersCount--
-                    this.profile.following === !this.profile.following
+                // Check if user updates follow in the user details page
+                if (profile && profile.userID !== currentUser?.userID && profile.userID === userID) {
+                    following ? profile.followersCount++ : profile.followersCount--
+                    profile.following = !profile.following
                 }
-                if (this.profile && this.profile.userID !== store.userStore.currentUser?.userID) {
-                    following ? this.profile.followingCount++ : this.profile.followingCount--
+                else if (profile && profile.userID === currentUser?.userID) {
+                    following ? profile.followingCount++ : profile.followingCount--
                 }
 
                 this.followings.forEach((profile) => {
                     if (profile.userID === userID) {
-                        profile.following ? profile.followersCount-- : profile.followersCount--
-                        profile.following === !profile.following
+                        profile.following ? profile.followersCount-- : profile.followersCount++
+                        profile.following = !profile.following
+                    }
+
+                    if (profile.userID == currentUser?.userID) {
+                        following ? profile.followersCount++ : profile.followersCount--
                     }
                 })
             })

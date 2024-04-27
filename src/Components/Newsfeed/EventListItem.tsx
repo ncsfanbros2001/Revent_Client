@@ -5,12 +5,14 @@ import { format } from "date-fns"
 import EventGuestList from "./EventGuestList"
 import { observer } from "mobx-react-lite"
 import { EventStatus } from "../../Utilities/staticValues"
+import { useStore } from "../../Stores/store"
 
 interface Props {
     event: EventsModel
 }
 
 const EventListItem = ({ event }: Props) => {
+    const { eventStore } = useStore()
 
     return (
         <Segment.Group>
@@ -64,12 +66,20 @@ const EventListItem = ({ event }: Props) => {
             <Image src={'/public/travel.jpg'} />
 
             <Segment clearing>
-                <Button as='div' labelPosition='right'>
-                    <Button color='blue' icon='star outline' content='Care' />
-                    <Label basic color='blue' pointing='left'>
-                        2,048
-                    </Label>
-                </Button>
+                {
+                    !event.isHost && (
+                        <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled}>
+                            <Button
+                                color={event.isCaring ? 'blue' : 'teal'}
+                                icon={event.isCaring ? 'star' : 'star outline'}
+                                content='Care'
+                                onClick={() => eventStore.careToEvent(event.eventID)} />
+                            <Label basic color='blue' pointing='left'>
+                                {event.careCount}
+                            </Label>
+                        </Button>
+                    )
+                }
 
                 <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
             </Segment>
