@@ -13,7 +13,6 @@ import ConfirmModal from "./Components/Common/ConfirmModal";
 
 const App = () => {
     const location = useLocation()
-
     const { commonStore, userStore } = useStore()
 
     useEffect(() => {

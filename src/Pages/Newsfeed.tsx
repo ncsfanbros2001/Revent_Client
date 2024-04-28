@@ -1,5 +1,5 @@
 import "semantic-ui-css/semantic.min.css";
-import { Grid, Loader } from "semantic-ui-react";
+import { Button, Container, Grid, Header, Loader } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import EventList from "../Components/Newsfeed/EventList";
 import { useStore } from "../Stores/store";
@@ -33,7 +33,7 @@ const Newsfeed = () => {
         }
 
         loadAllEvents()
-    }, [eventStore]);
+    }, []);
 
     if (loadingInitial && !loadingNext && eventListRegistry.size === 0) {
         return (<LoadingComponent />)
@@ -47,6 +47,11 @@ const Newsfeed = () => {
                         <EventItemPlaceholder />
                         <EventItemPlaceholder />
                     </>
+                ) : !loadingInitial && !loadingNext && eventListRegistry.size === 0 ? (
+                    <Container textAlign="center" style={{ marginTop: 30 }}>
+                        <Header as='h1' content='Oops ...! There is no event to display' />
+                        <Button content='Try Refresh' color="blue" icon='redo' onClick={() => loadAllEvents()} />
+                    </Container>
                 ) : (
                     <InfiniteScroll
                         pageStart={0}
@@ -66,7 +71,7 @@ const Newsfeed = () => {
             <Grid.Column width={10}>
                 <Loader active={loadingNext} />
             </Grid.Column>
-        </Grid>
+        </Grid >
     );
 };
 

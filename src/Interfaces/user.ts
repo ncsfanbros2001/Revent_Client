@@ -16,7 +16,6 @@ export interface RegisterModel { // For registering
     gender: string
     address: string
     birthDate: Date | null
-    password: string
 }
 
 export interface LoginModel { // For logging in

@@ -1,5 +1,5 @@
-import { ErrorMessage, Form, Formik } from 'formik';
-import { Header, Segment, Button, Label } from 'semantic-ui-react';
+import { Form, Formik } from 'formik';
+import { Header, Segment, Button } from 'semantic-ui-react';
 import '../../Stylesheets/Formik.css'
 import '../../Stylesheets/Login&Register.css'
 import { observer } from 'mobx-react-lite';
@@ -9,11 +9,42 @@ import * as Yup from 'yup'
 import SelectInput from '../FormikControls/SelectInput';
 import { genderOptions } from '../../Utilities/dropdownOptions';
 import DateInput from '../FormikControls/DateInput';
+import emailjs from '@emailjs/browser';
+import { RegisterModel } from '../../Interfaces/user';
+import { runInAction } from 'mobx';
+import { toast } from 'react-toastify';
+import axiosAgent from '../../API/axiosAgent';
+import { EmailSenderValues } from '../../Utilities/staticValues';
+import SuccessModal from '../Common/SuccessModal';
 
 const RegisterForm = () => {
-    const { userStore, modalStore } = useStore()
+    const { modalStore } = useStore()
     const ageValidator = new Date().setFullYear(new Date().getFullYear() - 16)
     const phoneNumberValidator = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
+
+    const handleSubmit = async (registerInfo: RegisterModel) => {
+        try {
+            const userPassword = await axiosAgent.AccountActions.register(registerInfo)
+
+            runInAction(() => {
+                emailjs.init(EmailSenderValues.PublicKey)
+
+                const emailParams = {
+                    senderName: "REVENT SYSTEM",
+                    to: registerInfo.email,
+                    subject: "Register Password",
+                    message: "Your password is: " + userPassword
+                };
+
+                emailjs.send(EmailSenderValues.ServiceKey, EmailSenderValues.TemplateID, emailParams)
+                    .then(() => modalStore.openModal(<SuccessModal message="Create Account Successfully" />))
+                    .catch(() => toast.error("Error sending email"))
+            })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <Segment clearing>
@@ -39,14 +70,7 @@ const RegisterForm = () => {
                         error: null
                     }
                 }
-                onSubmit={
-                    async (values, { setErrors }) => {
-                        return await userStore.register(values)
-                            .then(() => modalStore.closeModal())
-                            .catch(() => setErrors({ error: "Invalid register infos" }))
-
-                    }
-                }
+                onSubmit={(values) => handleSubmit(values)}
                 validationSchema={Yup.object({
                     fullname: Yup.string().required('Full name is required'),
                     username: Yup.string().required('Username is required'),
@@ -64,7 +88,7 @@ const RegisterForm = () => {
                         .max(new Date(ageValidator), 'You must be 16 years or older'),
                 })}>
 
-                {({ handleSubmit, isSubmitting, errors, dirty, isValid }) => (
+                {({ handleSubmit, isSubmitting, dirty, isValid }) => (
                     <Form className="ui form" onSubmit={handleSubmit} autoComplete='off'>
                         <TextInput
                             name='fullname'
@@ -96,17 +120,7 @@ const RegisterForm = () => {
                             placeholderText='Date of Birth'
                             showTimeSelect
                             timeCaption='time'
-                            dateFormat='MMMM d, yyyy' />
-
-                        <ErrorMessage
-                            name='error'
-                            render={() => (
-                                <Label
-                                    style={{ marginBottom: 10, width: '100%', textAlign: 'center' }}
-                                    basic
-                                    color='red'
-                                    content={errors.error} />
-                            )} />
+                            dateFormat='dd/MM/yyyy' />
 
                         <Button
                             disabled={!isValid || !dirty || isSubmitting}

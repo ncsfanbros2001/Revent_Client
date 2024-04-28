@@ -328,6 +328,18 @@ export default class EventStore {
             }
             this.eventListRegistry.set(eventToUpdate.eventID, eventToUpdate)
 
+            if (this.selectedEvent) {
+                if (this.selectedEvent.isCaring === false) {
+                    this.selectedEvent.careCount++
+                    this.selectedEvent.cares.push(new Care(user))
+                    this.selectedEvent.isCaring = true
+                }
+                else {
+                    this.selectedEvent.careCount--
+                    this.selectedEvent.cares.filter(x => x.userID === user?.userID)
+                    this.selectedEvent.isCaring = false
+                }
+            }
         } catch (error) {
             toast.error("Error With Care")
         }

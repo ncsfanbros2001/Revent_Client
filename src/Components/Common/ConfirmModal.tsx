@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite"
 const ConfirmModal = () => {
     const { modalStore } = useStore()
     return (
-        <Modal open={modalStore.confirmModal.isOpen} size="small">
+        <Modal open={modalStore.confirmModal.isOpen} size="tiny">
             <Modal.Content>
                 <Header as='h2' content={modalStore.confirmModal.content} />
             </Modal.Content>

@@ -6,6 +6,7 @@ import NotFound from "../Components/Errors/NotFound";
 import ServerError from "../Components/Errors/ServerError";
 import ProfileDetails from "../Pages/ProfileDetails";
 import RequireAuth from "./RequireAuth";
+import Notifications from "../Pages/Notifications";
 
 export const routes: RouteObject[] = [
     {
@@ -16,12 +17,13 @@ export const routes: RouteObject[] = [
                 element: <RequireAuth />, children: [
                     { path: '', element: <Newsfeed /> },
                     { path: 'details/:eventID', element: <EventDetails /> },
-                    { path: 'profiles/:userID', element: <ProfileDetails /> }
+                    { path: 'profiles/:userID', element: <ProfileDetails /> },
+                    { path: 'notFound', element: <NotFound /> },
+                    { path: 'notifications', element: <Notifications /> },
+                    { path: 'serverError', element: <ServerError /> },
+                    { path: '*', element: <Navigate to='/notFound' /> },
                 ]
-            },
-            { path: 'notFound', element: <NotFound /> },
-            { path: 'serverError', element: <ServerError /> },
-            { path: '*', element: <Navigate to='/notFound' /> },
+            }
         ]
     }
 ]

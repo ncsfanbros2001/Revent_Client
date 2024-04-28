@@ -4,11 +4,11 @@ import { Link, NavLink } from "react-router-dom";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
 
-
 const Navbar = () => {
     const { modalStore, userStore } = useStore();
     const { openModal } = modalStore
     const { currentUser, logout } = userStore
+
 
     return (
         <Menu inverted fixed="top">
@@ -20,14 +20,14 @@ const Navbar = () => {
                 <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
                 <Menu.Item>
+                    <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
+                </Menu.Item>
+
+                <Menu.Item>
                     <Search
                         category
                         placeholder="Search User"
                     />
-                </Menu.Item>
-
-                <Menu.Item>
-                    <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
                 </Menu.Item>
 
                 <Menu.Item position="right">

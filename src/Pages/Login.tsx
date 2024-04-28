@@ -8,6 +8,7 @@ import { observer } from 'mobx-react-lite';
 import RegisterForm from '../Components/Form/RegisterForm';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
+import RetrievePasswordForm from '../Components/Form/RetrievePasswordForm';
 
 const Login = () => {
     const { userStore, modalStore } = useStore()
@@ -64,7 +65,7 @@ const Login = () => {
                                                 setFailedLoginAttempt(failedLoginAttempt + 1)
 
                                                 if (failedLoginAttempt === 4) {
-                                                    const lockUntil = new Date().setMinutes(new Date().getMinutes() + 1).toString()
+                                                    const lockUntil = new Date().setMinutes(new Date().getMinutes() + 5).toString()
 
                                                     localStorage.setItem("loginDisabledUntil", lockUntil)
                                                     setLoginLocked(true)
@@ -129,13 +130,14 @@ const Login = () => {
                             <Button
                                 className='buttonControls'
                                 color='grey'
-                                content='Forgot Password' />
+                                content='Forgot Password'
+                                onClick={() => modalStore.openModal(<RetrievePasswordForm />)} />
+
                             <Button
                                 className='buttonControls'
                                 color="blue"
-                                onClick={() => modalStore.openModal(<RegisterForm />)}>
-                                Create new Account
-                            </Button>
+                                content='Create new Account'
+                                onClick={() => modalStore.openModal(<RegisterForm />)} />
                         </Segment>
                     </Grid.Column>
                 </Grid.Row>

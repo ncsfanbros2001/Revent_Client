@@ -1,4 +1,4 @@
-import { Card, Grid, Header, Tab } from "semantic-ui-react"
+import { Card, Container, Grid, Header, Tab } from "semantic-ui-react"
 import { useStore } from "../../Stores/store"
 import ProfileCard from "./ProfileCard"
 import { observer } from "mobx-react-lite"
@@ -20,9 +20,17 @@ const ProfileFollowings = () => {
                 </Grid.Column>
                 <Grid.Column width={16}>
                     <Card.Group itemsPerRow={5}>
-                        {followings.map((profile) => (
+                        {followings.length > 0 ? followings.map((profile) => (
                             <ProfileCard key={profile.userID} userProfile={profile} />
-                        ))}
+                        )) : (
+                            <Container textAlign="center">
+                                <Header
+                                    as='h2'
+                                    content={activeTab === 2 ? 'This person follows no one'
+                                        : activeTab === 3 ? 'This person has no followers' : null}
+                                    style={{ marginTop: 15 }} />
+                            </Container>
+                        )}
                     </Card.Group>
                 </Grid.Column>
             </Grid>

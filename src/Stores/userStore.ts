@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { ChangePasswordModel, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
+import { ChangePasswordModel, LoginModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
 import { router } from "../router/Routes";
@@ -43,17 +43,6 @@ export default class UserStore {
         runInAction(() => {
             this.currentUser = null
             store.profileStore.profile = null
-        })
-
-        router.navigate('/')
-    }
-
-    register = async (registerInfo: RegisterModel) => {
-        const user = await axiosAgent.AccountActions.register(registerInfo)
-        store.commonStore.setToken(user.token)
-
-        runInAction(() => {
-            this.currentUser = user
         })
 
         router.navigate('/')

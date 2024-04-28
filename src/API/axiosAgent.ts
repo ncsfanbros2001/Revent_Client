@@ -58,7 +58,12 @@ axios.interceptors.response.use(async (response) => {
             }
             break
         case 404:
-            router.navigate('/notFound')
+            if (store.userStore.isLoggedIn) {
+                router.navigate('/notFound')
+            }
+            else {
+                // toast.error(data.error)
+            }
             break
         case 500:
             store.commonStore.setServerError(data)
@@ -106,7 +111,7 @@ const AccountActions = {
         return request.post<UserModel>('/Account/login', loginInfo)
     },
     register: (registerInfo: RegisterModel) => {
-        return request.post<UserModel>('/Account/register', registerInfo)
+        return request.post<string>('/Account/register', registerInfo)
     },
     updateProfile: (updateProfileInfo: UpdateProfileModel) => {
         return request.post<UserModel>('/Account/updateProfile', updateProfileInfo)
@@ -116,6 +121,9 @@ const AccountActions = {
     },
     changePassword: (changePasswordInfo: ChangePasswordModel) => {
         return request.post<void>('/Account/changePassword', changePasswordInfo)
+    },
+    retrievePassword: (email: string) => {
+        return request.post<string>('/Account/retrievePassword', { email: email })
     }
 }
 
@@ -142,7 +150,7 @@ const ProfileActions = {
 
 const InteractActions = {
     careToggle: (eventID: string) => {
-        return request.post<void>(`/Interact/${eventID}`, {})
+        return request.post<void>(`/Interact/care/${eventID}`, {})
     }
 }
 
