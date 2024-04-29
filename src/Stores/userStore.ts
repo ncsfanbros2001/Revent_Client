@@ -35,6 +35,8 @@ export default class UserStore {
 
         runInAction(() => this.currentUser = user)
 
+        store.eventStore.setPredicate('all', 'true')
+
         router.navigate('/')
     }
 
@@ -43,26 +45,27 @@ export default class UserStore {
         runInAction(() => {
             this.currentUser = null
             store.profileStore.profile = null
+
+            store.eventStore.predicate.clear()
         })
 
         router.navigate('/')
     }
 
     updateProfile = async (updateProfileInfo: UpdateProfileModel) => {
-        try {
-            const user = await axiosAgent.AccountActions.updateProfile(updateProfileInfo)
+        axiosAgent.AccountActions.updateProfile(updateProfileInfo)
+            .then((response) => {
+                runInAction(() => {
+                    this.currentUser = response
 
-            runInAction(() => {
-                this.currentUser = user
+                    if (store.profileStore.profile?.userID == response.userID) {
+                        store.profileStore.profile = { ...store.profileStore.profile, ...updateProfileInfo }
+                    }
 
-                if (store.profileStore.profile?.userID == this.currentUser.userID) {
-                    store.profileStore.profile = { ...store.profileStore.profile, ...updateProfileInfo }
-                }
+                    store.modalStore.closeModal()
+                    toast.success("Update Successfully")
+                })
             })
-        }
-        catch (error) {
-            console.log(error);
-        }
     }
 
     updateProfileVisibility = async () => {

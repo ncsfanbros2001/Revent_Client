@@ -1,14 +1,13 @@
 import "semantic-ui-css/semantic.min.css";
-import { Button, Container, Grid, Header, Loader } from "semantic-ui-react";
+import { Button, Container, Grid, Header, Loader, Segment } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import EventList from "../Components/Newsfeed/EventList";
-import { useStore } from "../Stores/store";
+import { store, useStore } from "../Stores/store";
 import { observer } from "mobx-react-lite";
 import EventFilter from "../Components/Newsfeed/EventFilter";
 import { PagingParams } from "../Interfaces/pagination";
 import InfiniteScroll from "react-infinite-scroller";
 import EventItemPlaceholder from "../Components/Newsfeed/EventItemPlaceholder";
-import LoadingComponent from "../Components/Common/LoadingComponent";
 
 const Newsfeed = () => {
     const { eventStore, profileStore } = useStore()
@@ -35,10 +34,6 @@ const Newsfeed = () => {
         loadAllEvents()
     }, []);
 
-    if (loadingInitial && !loadingNext && eventListRegistry.size === 0) {
-        return (<LoadingComponent />)
-    }
-
     return (
         <Grid>
             <Grid.Column width={10}>
@@ -48,9 +43,12 @@ const Newsfeed = () => {
                         <EventItemPlaceholder />
                     </>
                 ) : !loadingInitial && !loadingNext && eventListRegistry.size === 0 ? (
-                    <Container textAlign="center" style={{ marginTop: 30 }}>
+                    <Container textAlign="center" style={{ marginTop: 20 }}>
                         <Header as='h1' content='Oops ...! There is no event to display' />
-                        <Button content='Try Refresh' color="blue" icon='redo' onClick={() => loadAllEvents()} />
+                        <Button content='Try Refresh' color="blue" icon='redo' onClick={() => {
+                            loadAllEvents()
+                            console.log(store.userStore.currentUser)
+                        }} />
                     </Container>
                 ) : (
                     <InfiniteScroll
@@ -68,9 +66,13 @@ const Newsfeed = () => {
                 <EventFilter />
             </Grid.Column>
 
-            <Grid.Column width={10}>
-                <Loader active={loadingNext} />
-            </Grid.Column>
+            {loadingNext && (
+                <Grid.Column width={10}>
+                    <Segment>
+                        <Loader active={loadingNext} size="tiny" />
+                    </Segment>
+                </Grid.Column>
+            )}
         </Grid >
     );
 };

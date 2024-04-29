@@ -35,7 +35,7 @@ const UpdateProfileForm = () => {
             <Header as='h1' color="blue" content='Update Profile' />
             <Formik
                 initialValues={new UpdateProfileModel(profileStore.profile!)}
-                onSubmit={(values) => userStore.updateProfile(values).then(() => modalStore.closeModal())}
+                onSubmit={(values) => userStore.updateProfile(values)}
                 validationSchema={validationSchema}>
                 {
                     ({ handleSubmit, isValid, isSubmitting, dirty }) => (

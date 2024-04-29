@@ -26,8 +26,8 @@ const ProfileFollowings = () => {
                             <Container textAlign="center">
                                 <Header
                                     as='h2'
-                                    content={activeTab === 2 ? 'This person follows no one'
-                                        : activeTab === 3 ? 'This person has no followers' : null}
+                                    content={activeTab === 3 ? 'This person follows no one'
+                                        : activeTab === 2 ? 'This person has no followers' : null}
                                     style={{ marginTop: 15 }} />
                             </Container>
                         )}

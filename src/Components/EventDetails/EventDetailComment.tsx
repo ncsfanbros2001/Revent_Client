@@ -67,7 +67,7 @@ const EventDetailComment = ({ eventID }: Props) => {
                 </Segment>
 
 
-                <Segment style={{ maxHeight: '600px', overflow: 'auto' }}>
+                <Segment style={{ maxHeight: '600px', overflowY: 'auto' }}>
                     <Comment.Group>
                         {commentStore.comments.length > 0 ? commentStore.comments.map((comment) => (
                             <Comment key={comment.commentID}>

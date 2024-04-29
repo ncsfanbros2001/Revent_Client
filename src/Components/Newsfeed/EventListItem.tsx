@@ -15,7 +15,7 @@ const EventListItem = ({ event }: Props) => {
     const { eventStore } = useStore()
 
     return (
-        <Segment.Group>
+        <Segment.Group style={{ margin: '20px 0px' }}>
             <Segment>
                 {
                     event.status === EventStatus.Cancelled &&

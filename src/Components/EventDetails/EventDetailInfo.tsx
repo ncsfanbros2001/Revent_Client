@@ -26,14 +26,16 @@ const EventDetailInfo = ({ event }: Props) => {
                         <Icon name='calendar' size='large' color='teal' />
                     </Grid.Column>
                     <Grid.Column width={15}>
-                        <span>{format(event.beginTime!, 'dd MMM yyyy h:mm aa')}</span>
+                        <span>
+                            {format(event.beginTime!, 'dd MMM yyyy h:mm aa')} - {format(event.endTime!, 'dd MMM yyyy h:mm aa')}
+                        </span>
                     </Grid.Column>
                 </Grid>
             </Segment>
             <Segment attached>
                 <Grid verticalAlign='middle'>
                     <Grid.Column width={1}>
-                        <Icon name='marker' size='large' color='teal' />
+                        <Icon name='map marker alternate' size='large' color='teal' />
                     </Grid.Column>
                     <Grid.Column width={11}>
                         <span>{event.location}</span>

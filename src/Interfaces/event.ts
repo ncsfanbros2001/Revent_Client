@@ -98,3 +98,16 @@ export class EventFormValues {
         }
     }
 }
+
+export interface IStatistics {
+    totalEventHosted: number
+    totalGuestsAttended: number
+    totalCaresReceived: number
+}
+
+export interface UserEvent {
+    eventID: string,
+    title: string,
+    category: string,
+    beginTime: Date
+}

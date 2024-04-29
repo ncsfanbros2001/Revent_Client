@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { EventFormValues, EventsModel } from "../Interfaces/event";
+import { EventFormValues, EventsModel, IStatistics, UserEvent } from "../Interfaces/event";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../Stores/store";
@@ -62,7 +62,7 @@ axios.interceptors.response.use(async (response) => {
                 router.navigate('/notFound')
             }
             else {
-                // toast.error(data.error)
+                toast.error(data.error)
             }
             break
         case 500:
@@ -100,6 +100,9 @@ const EventActions = {
     },
     attendEvent: (eventID: string) => {
         return request.post<void>(`/Event/attend/${eventID}`, {})
+    },
+    removeGuest: (eventID: string, userID: string) => {
+        return request.delete<void>(`/Event/${eventID}/${userID}`)
     }
 }
 
@@ -145,6 +148,13 @@ const ProfileActions = {
     },
     updateFollowing: (userID: string) => {
         return request.post(`/follow/${userID}`, {})
+    }
+    ,
+    statistics: () => {
+        return request.get<IStatistics>(`/Event/statistics`)
+    },
+    userEvents: (predicate: string) => {
+        return request.get<UserEvent[]>(`/Event/userEvents?predicate=${predicate}`)
     }
 }
 

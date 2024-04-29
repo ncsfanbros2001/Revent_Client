@@ -9,7 +9,7 @@ const EventFilter = () => {
 
     return (
         <>
-            <Menu vertical size="large" style={{ width: '100%', marginTop: 28 }}>
+            <Menu vertical size="large" style={{ width: '100%', marginTop: 20 }}>
                 <Header icon='filter' attached color="teal" content='Filters' />
                 <Menu.Item
                     content='All Events'

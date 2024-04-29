@@ -4,6 +4,8 @@ import ProfileFollowings from "./ProfileFollowings"
 import { useStore } from "../../Stores/store"
 import ProfileAbout from "./ProfileAbout"
 import { IProfile } from "../../Interfaces/user"
+import ProfileEvents from "./ProfileEvents"
+import { useEffect } from "react"
 
 interface Props {
     userProfile: IProfile
@@ -12,9 +14,11 @@ interface Props {
 const ProfileContent = ({ userProfile }: Props) => {
     const { profileStore } = useStore()
 
+    useEffect(() => { profileStore.getEventStatistics() }, [])
+
     const profileTabs = [
         { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> },
-        { menuItem: "Events", render: () => <Tab.Pane>Events</Tab.Pane> },
+        { menuItem: "Events", render: () => <ProfileEvents /> },
         { menuItem: "Followers", render: () => <ProfileFollowings /> },
         { menuItem: "Following", render: () => <ProfileFollowings /> },
     ]

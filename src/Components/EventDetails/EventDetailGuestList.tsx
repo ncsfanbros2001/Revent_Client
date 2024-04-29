@@ -1,14 +1,16 @@
 import { Fragment } from "react"
 import { Link } from "react-router-dom"
-import { Item, Label, List, Segment, Image } from "semantic-ui-react"
+import { Item, Label, List, Segment, Image, Button } from "semantic-ui-react"
 import { EventsModel } from "../../Interfaces/event"
 import { observer } from "mobx-react-lite"
+import { useStore } from "../../Stores/store"
 
 interface Props {
     event: EventsModel
 }
 
-const EventDetailGuestList = ({ event: { guests, host } }: Props) => {
+const EventDetailGuestList = ({ event: { guests, host, eventID } }: Props) => {
+    const { userStore, eventStore } = useStore()
 
     if (!guests) return null
     return (
@@ -34,6 +36,7 @@ const EventDetailGuestList = ({ event: { guests, host } }: Props) => {
                                 >
                                     Host
                                 </Label>}
+
                             <Image size='tiny' src={guest.avatarURL || '/public/user.png'} />
                             <Item.Content verticalAlign='middle'>
                                 <Item.Header as='h3'>
@@ -41,6 +44,18 @@ const EventDetailGuestList = ({ event: { guests, host } }: Props) => {
                                 </Item.Header>
                                 {guest.following && <Item.Extra style={{ color: 'orange' }}>Following</Item.Extra>}
                             </Item.Content>
+
+                            {host?.userID === userStore.currentUser?.userID && guest.userID !== host?.userID && (
+                                <Button
+                                    color="red"
+                                    content='Remove'
+                                    icon='remove user'
+                                    size="mini"
+                                    floated="right"
+                                    onClick={() => eventStore.removeGuest(guest.userID, eventID)}
+                                    loading={eventStore.loading}
+                                    disabled={eventStore.loading} />
+                            )}
                         </Item>
                     ))}
 

@@ -23,7 +23,7 @@ const EventDetails = () => {
         return () => clearSelectedEvent()
     }, [eventID, loadOneEvent, clearSelectedEvent])
 
-    if (!selectedEvent || loadingInitial) return <LoadingComponent /> // Not gonna happen 
+    if (!selectedEvent || loadingInitial) return <LoadingComponent content='Loading Event...' /> // Not gonna happen 
 
     return (
         <Grid>

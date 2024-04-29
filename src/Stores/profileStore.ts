@@ -2,6 +2,8 @@ import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { IProfile } from "../Interfaces/user";
 import axiosAgent from "../API/axiosAgent";
 import { store } from "./store";
+import { IStatistics, UserEvent } from "../Interfaces/event";
+import { toast } from "react-toastify";
 
 export default class ProfileStore {
     profile: IProfile | null = null
@@ -10,7 +12,10 @@ export default class ProfileStore {
     followings: IProfile[] = []
     loadingFollowings: boolean = false
     loadingUpdateFollowing: boolean = false
-    activeTab = 0;
+    activeTab = 0
+    eventStatistics: IStatistics | null = null
+    userEvents: UserEvent[] = []
+    loading = false
 
     constructor() {
         makeAutoObservable(this)
@@ -138,5 +143,33 @@ export default class ProfileStore {
         finally {
             runInAction(() => this.loadingFollowings = false)
         }
+    }
+
+    getEventStatistics = () => {
+        this.loading = true
+        axiosAgent.ProfileActions.statistics()
+            .then((response) => {
+                runInAction(() => {
+                    this.eventStatistics = response
+                })
+            })
+            .catch(() => {
+                toast.error("Error Loading Stats")
+            })
+            .finally(() => runInAction(() => this.loading = false))
+    }
+
+    loadUserEvents = (predicate?: string) => {
+        this.loading = true
+        axiosAgent.ProfileActions.userEvents(predicate!)
+            .then((response) => {
+                runInAction(() => {
+                    this.userEvents = response
+                })
+            })
+            .catch(() => {
+                toast.error("Error Loading Events")
+            })
+            .finally(() => runInAction(() => this.loading = false))
     }
 }

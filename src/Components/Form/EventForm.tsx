@@ -12,6 +12,7 @@ import { eventCategoryOptions, publicityOptions } from "../../Utilities/dropdown
 import DateInput from "../FormikControls/DateInput"
 import TextAreaInput from "../FormikControls/TextAreaInput"
 import { router } from "../../router/Routes"
+import EventRules from "../Common/EventRules"
 
 interface Props {
     selectedEvent?: EventsModel
@@ -49,10 +50,10 @@ const EventForm = (props: Props) => {
     }, [selectedEvent])
 
     const handleFormSubmit = (event: EventFormValues) => {
-        selectedEvent ? updateEvent(event) :
-            createEvent(event).then(() => router.navigate(`/details/${event.eventID}`));
-
-        modalStore.closeModal()
+        selectedEvent ? updateEvent(event).finally(() => modalStore.closeModal()) :
+            createEvent(event)
+                .then(() => router.navigate(`/details/${event.eventID}`))
+                .finally(() => modalStore.closeModal())
     }
 
     if (loadingInitial) return <LoadingComponent content="Loading Event..." />
@@ -130,6 +131,14 @@ const EventForm = (props: Props) => {
                                 type="button"
                                 content='Cancel'
                                 onClick={() => modalStore.closeModal()} />
+
+                            <Button
+                                floated="left"
+                                type="button"
+                                content='Our Rules For Event'
+                                icon="list"
+                                color="blue"
+                                onClick={() => modalStore.openModal(<EventRules />)} />
                         </Form>
                     )
                 }

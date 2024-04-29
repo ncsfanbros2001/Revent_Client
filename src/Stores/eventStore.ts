@@ -1,7 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { EventFormValues, EventsModel } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
-import { format } from "date-fns";
 import { v4 as uuid } from 'uuid'
 import { store } from "./store";
 import { EventStatus } from "../Utilities/staticValues";
@@ -81,20 +80,8 @@ export default class EventStore {
         this.pagination = pagination
     }
 
-
-    get eventsByDate() { // Sort event by date asc
+    get eventToList() { // Convert events to an array
         return Array.from(this.eventListRegistry.values())
-            .sort((a, b) => a.beginTime!.getTime() - b.beginTime!.getTime())
-    }
-
-    get groupedEvents() {
-        return Object.entries(
-            this.eventsByDate.reduce((eventList, event) => {
-                const date = format(event.beginTime!, 'dd MMM yyyy')
-                eventList[date] = eventList[date] ? [...eventList[date], event] : [event]
-                return eventList
-            }, {} as { [key: string]: EventsModel[] })
-        )
     }
 
     get axiosParams() {
@@ -139,40 +126,42 @@ export default class EventStore {
 
     loadAllEvents = async () => {
         this.setLoadingInitial(true)
-        try {
-            const result = await axiosAgent.EventActions.getAllEvents(this.axiosParams)
-            result.data.forEach((event) => {
-                this.setEvent(event)
-            });
 
-            this.setPagination(result.pagination)
-        }
-        catch (error) {
-            console.log(error)
-        }
-        finally {
-            this.setLoadingInitial(false)
-        }
+        await axiosAgent.EventActions.getAllEvents(this.axiosParams)
+            .then(response => {
+                response.data.forEach((event) => {
+                    this.setEvent(event)
+                });
+
+                this.setPagination(response.pagination)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => {
+                this.setLoadingInitial(false)
+            })
     }
 
+
     loadOneEvent = async (eventID: string) => {
+        this.setLoadingInitial(true)
         let event = this.getEvent(eventID)
         if (event) { // If event is available inside the registry, set selected event to it
             this.setSelectedEvent(event)
         }
         else { // If event isn't available inside the registry, get it from DB, add it to the registry and assign it as selected event
-            this.setLoadingInitial(true)
+
             try {
                 event = await axiosAgent.EventActions.getOneEvent(eventID)
                 this.setEvent(event)
                 this.setSelectedEvent(event)
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error);
             }
-            finally {
-                this.setLoadingInitial(false)
-            }
         }
+        this.setLoadingInitial(false)
     }
 
     createEvent = async (event: EventFormValues) => {
@@ -309,6 +298,25 @@ export default class EventStore {
         });
     }
 
+    removeGuest = (userID: string, eventID: string) => {
+        try {
+            this.loading = true
+            axiosAgent.EventActions.removeGuest(eventID, userID)
+
+            this.eventListRegistry.forEach((event) => {
+                if (event.eventID === eventID) {
+                    event.guests = event.guests.filter(x => x.userID !== userID)
+                }
+            });
+        }
+        catch (error) {
+            console.log(error)
+        }
+        finally {
+            runInAction(() => { this.loading = false })
+        }
+    }
+
     careToEvent = async (eventID: string) => {
         try {
             axiosAgent.InteractActions.careToggle(eventID)
@@ -336,7 +344,7 @@ export default class EventStore {
                 }
                 else {
                     this.selectedEvent.careCount--
-                    this.selectedEvent.cares.filter(x => x.userID === user?.userID)
+                    this.selectedEvent.cares.filter(x => x.userID !== user?.userID)
                     this.selectedEvent.isCaring = false
                 }
             }

@@ -10,6 +10,7 @@ import Login from "./Pages/Login";
 import { useStore } from "./Stores/store";
 import LoadingComponent from "./Components/Common/LoadingComponent";
 import ConfirmModal from "./Components/Common/ConfirmModal";
+import ScrollToTop from "./router/ScrollToTop";
 
 const App = () => {
     const location = useLocation()
@@ -34,6 +35,7 @@ const App = () => {
             {location.pathname === '/' && !userStore.isLoggedIn ? (<Login />) : (
                 <>
                     <Navbar />
+                    <ScrollToTop />
                     <Container style={{ marginTop: "6em" }}>
                         <Outlet />
                     </Container>
