@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import { Fragment } from "react/jsx-runtime"
-import { Button, Placeholder, Segment } from "semantic-ui-react"
+import { Placeholder, Segment } from "semantic-ui-react"
 
 const EventItemPlaceholder = () => {
     return (
@@ -25,9 +25,6 @@ const EventItemPlaceholder = () => {
                         </Placeholder>
                     </Segment>
                     <Segment secondary style={{ minHeight: 70 }} />
-                    <Segment clearing>
-                        <Button disabled color='blue' floated='right' content='View' />
-                    </Segment>
                 </Segment.Group>
             </Placeholder>
         </Fragment>

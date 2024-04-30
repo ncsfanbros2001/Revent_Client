@@ -26,7 +26,7 @@ const UserEvents = () => {
     return (
         <Grid>
             <Grid.Column width={16}>
-                <Header floated="left" icon="calendar" content="Events" />
+                <Header floated="left" icon="calendar" content="Events List" />
             </Grid.Column>
             <Grid.Column width={16}>
                 <Tab
@@ -53,7 +53,7 @@ const UserEvents = () => {
                         </Card>
                     )) : (
                         <Container fluid textAlign="center">
-                            <Header content="No Event Available" />
+                            <Header content="No Event Available" style={{ margin: '25px 5px' }} />
                         </Container>
                     )}
                 </Card.Group>

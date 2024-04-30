@@ -60,6 +60,7 @@ const ChangePasswordForm = () => {
                                 content='Change Password'
                                 floated="right" />
                             <Button
+                                disabled={isSubmitting}
                                 color='grey'
                                 content='Cancel'
                                 floated="right"

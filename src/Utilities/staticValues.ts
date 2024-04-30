@@ -14,3 +14,8 @@ export enum EmailSenderValues {
     ServiceKey = 'service_ecctmzh',
     TemplateID = 'template_ynqlxit'
 }
+
+export enum NotificationStatus {
+    Enabled = 'on',
+    Disabled = 'off'
+}

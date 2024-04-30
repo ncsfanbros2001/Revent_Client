@@ -6,6 +6,7 @@ import { store } from "../Stores/store";
 import { ChangePasswordModel, IProfile, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import { Photo } from "../Interfaces/photo";
 import { PaginatedResult } from "../Interfaces/pagination";
+import { Notification } from "../Interfaces/notification";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -26,7 +27,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await delay(0);
+    await delay(500);
     const pagination = response.headers["pagination"]
 
     if (pagination) {
@@ -131,6 +132,9 @@ const AccountActions = {
 }
 
 const ProfileActions = {
+    getAllProfiles: (predicate: string) => {
+        return request.get<IProfile[]>(`/Profile?predicate=${predicate}`)
+    },
     getProfile: (userID: string) => {
         return request.get<IProfile>(`/Profile/${userID}`)
     },
@@ -148,8 +152,7 @@ const ProfileActions = {
     },
     updateFollowing: (userID: string) => {
         return request.post(`/follow/${userID}`, {})
-    }
-    ,
+    },
     statistics: () => {
         return request.get<IStatistics>(`/Event/statistics`)
     },
@@ -164,8 +167,17 @@ const InteractActions = {
     }
 }
 
+const NotificationActions = {
+    notificationToggle: () => {
+        return request.post<void>(`/Notification`, {})
+    },
+    getNotification: () => {
+        return request.get<Notification[]>(`/Notification`)
+    }
+}
+
 const axiosAgent = {
-    EventActions, AccountActions, ProfileActions, InteractActions
+    EventActions, AccountActions, ProfileActions, InteractActions, NotificationActions
 }
 
 export default axiosAgent;

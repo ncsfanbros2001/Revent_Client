@@ -10,7 +10,7 @@ const ProfileEvents = () => {
 
     return (
         <Tab.Pane loading={loading}>
-            <Header as='h3' content={userStore.currentUser?.fullname + " Events"} icon='chart bar' />
+            <Header as='h3' content={userStore.currentUser?.fullname + " Events Stats"} icon='chart bar' />
 
             <Table celled>
                 <Table.Header>
@@ -21,13 +21,13 @@ const ProfileEvents = () => {
                     </Table.Row>
                 </Table.Header>
 
-                {/* <Table.Body>
+                <Table.Body>
                     <Table.Row textAlign="center">
                         <Table.Cell>{eventStatistics!.totalEventHosted}</Table.Cell>
                         <Table.Cell>{eventStatistics!.totalGuestsAttended}</Table.Cell>
                         <Table.Cell>{eventStatistics!.totalCaresReceived}</Table.Cell>
                     </Table.Row>
-                </Table.Body> */}
+                </Table.Body>
             </Table>
 
             <Divider />

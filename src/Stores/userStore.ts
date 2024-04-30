@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 export default class UserStore {
     currentUser: UserModel | null = null
+    loading: boolean = false
 
     constructor() {
         makeAutoObservable(this)
@@ -53,6 +54,7 @@ export default class UserStore {
     }
 
     updateProfile = async (updateProfileInfo: UpdateProfileModel) => {
+        this.loading = true
         axiosAgent.AccountActions.updateProfile(updateProfileInfo)
             .then((response) => {
                 runInAction(() => {
@@ -66,6 +68,8 @@ export default class UserStore {
                     toast.success("Update Successfully")
                 })
             })
+            .catch((error) => toast.error(error))
+            .finally(() => runInAction(() => { this.loading = false }))
     }
 
     updateProfileVisibility = async () => {

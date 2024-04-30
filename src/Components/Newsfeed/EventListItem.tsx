@@ -66,20 +66,16 @@ const EventListItem = ({ event }: Props) => {
             <Image src={'/public/travel.jpg'} />
 
             <Segment clearing>
-                {
-                    !event.isHost && (
-                        <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled}>
-                            <Button
-                                color={event.isCaring ? 'blue' : 'teal'}
-                                icon={event.isCaring ? 'star' : 'star outline'}
-                                content='Care'
-                                onClick={() => eventStore.careToEvent(event.eventID)} />
-                            <Label basic color='blue' pointing='left'>
-                                {event.careCount}
-                            </Label>
-                        </Button>
-                    )
-                }
+                <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled || event.isHost}>
+                    <Button
+                        color={event.isCaring ? 'blue' : 'teal'}
+                        icon={event.isCaring ? 'star' : 'star outline'}
+                        content='Care'
+                        onClick={() => eventStore.careToEvent(event.eventID)} />
+                    <Label basic color='blue' pointing='left'>
+                        {event.careCount}
+                    </Label>
+                </Button>
 
                 <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
             </Segment>

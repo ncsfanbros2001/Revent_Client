@@ -16,14 +16,17 @@ import { toast } from 'react-toastify';
 import axiosAgent from '../../API/axiosAgent';
 import { EmailSenderValues } from '../../Utilities/staticValues';
 import SuccessModal from '../Common/SuccessModal';
+import { useState } from 'react';
 
 const RegisterForm = () => {
     const { modalStore } = useStore()
     const ageValidator = new Date().setFullYear(new Date().getFullYear() - 16)
     const phoneNumberValidator = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async (registerInfo: RegisterModel) => {
         try {
+            setIsLoading(true)
             const userPassword = await axiosAgent.AccountActions.register(registerInfo)
 
             runInAction(() => {
@@ -39,6 +42,7 @@ const RegisterForm = () => {
                 emailjs.send(EmailSenderValues.ServiceKey, EmailSenderValues.TemplateID, emailParams)
                     .then(() => modalStore.openModal(<SuccessModal message="Create Account Successfully" />))
                     .catch(() => toast.error("Error sending email"))
+                    .finally(() => setIsLoading(false))
             })
         }
         catch (error) {
@@ -124,12 +128,13 @@ const RegisterForm = () => {
 
                         <Button
                             disabled={!isValid || !dirty || isSubmitting}
-                            loading={isSubmitting}
+                            loading={isSubmitting || isLoading}
                             type='submit'
                             color='green'
                             content='Register'
                             floated="right" />
                         <Button
+                            disabled={isSubmitting || isLoading}
                             color='grey'
                             content='Cancel'
                             floated="right"

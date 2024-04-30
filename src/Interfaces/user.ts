@@ -4,7 +4,8 @@ export interface UserModel { // For the current user
     fullname: string
     username: string
     avatarURL: string
-    updatedAt: string | null
+    updatedAt: string
+    notificationStatus: string
     token: string
 }
 

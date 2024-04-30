@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { useStore } from "../../Stores/store"
 import { observer } from "mobx-react-lite"
 import { EventFormValues, EventsModel } from "../../Interfaces/event"
-import LoadingComponent from "../Common/LoadingComponent"
 import { Formik, Form } from "formik"
 import * as Yup from 'yup'
 import TextInput from "../FormikControls/TextInput"
@@ -56,10 +55,8 @@ const EventForm = (props: Props) => {
                 .finally(() => modalStore.closeModal())
     }
 
-    if (loadingInitial) return <LoadingComponent content="Loading Event..." />
-
     return (
-        <Segment clearing>
+        <Segment clearing loading={loadingInitial}>
             <Header as='h1' color="blue" content={selectedEvent ? 'Update Event' : 'Create Event'} />
             <Formik
                 enableReinitialize={true}
@@ -127,12 +124,14 @@ const EventForm = (props: Props) => {
                                 type="submit"
                                 content={selectedEvent ? 'Update' : 'Create'} />
                             <Button
+                                disabled={isSubmitting}
                                 floated="right"
                                 type="button"
                                 content='Cancel'
                                 onClick={() => modalStore.closeModal()} />
 
                             <Button
+                                disabled={isSubmitting}
                                 floated="left"
                                 type="button"
                                 content='Our Rules For Event'

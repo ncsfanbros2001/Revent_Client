@@ -1,8 +1,9 @@
-import { Button, Container, Menu, Image, Dropdown, Search } from "semantic-ui-react";
+import { Button, Container, Menu, Image, Dropdown } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
 import { Link, NavLink } from "react-router-dom";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
+import Searchbar from "./Searchbar";
 
 const Navbar = () => {
     const { modalStore, userStore } = useStore();
@@ -24,10 +25,7 @@ const Navbar = () => {
                 </Menu.Item>
 
                 <Menu.Item>
-                    <Search
-                        category
-                        placeholder="Search User"
-                    />
+                    <Searchbar />
                 </Menu.Item>
 
                 <Menu.Item position="right">

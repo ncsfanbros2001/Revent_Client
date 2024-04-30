@@ -66,7 +66,7 @@ const UpdateProfileForm = () => {
                                 placeholderText='Date of Birth'
                                 showTimeSelect
                                 timeCaption='time'
-                                dateFormat='MMMM d, yyyy' />
+                                dateFormat='dd/MM/yyyy' />
 
                             <TextAreaInput
                                 name='biography'
@@ -81,6 +81,7 @@ const UpdateProfileForm = () => {
                                 content='Update Profile'
                                 floated="right" />
                             <Button
+                                disabled={isSubmitting}
                                 color='grey'
                                 content='Cancel'
                                 floated="right"

@@ -56,20 +56,16 @@ const EventDetailHeader = ({ event }: Props) => {
                 </Segment>
             </Segment>
             <Segment clearing attached='bottom'>
-                {
-                    !event.isHost && (
-                        <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled}>
-                            <Button
-                                color={event.isCaring ? 'blue' : 'teal'}
-                                icon={event.isCaring ? 'star' : 'star outline'}
-                                content='Care'
-                                onClick={() => eventStore.careToEvent(event.eventID)} />
-                            <Label basic color='blue' pointing='left'>
-                                {event.careCount}
-                            </Label>
-                        </Button>
-                    )
-                }
+                <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled || event.isHost}>
+                    <Button
+                        color={event.isCaring ? 'blue' : 'teal'}
+                        icon={event.isCaring ? 'star' : 'star outline'}
+                        content='Care'
+                        onClick={() => eventStore.careToEvent(event.eventID)} />
+                    <Label basic color='blue' pointing='left'>
+                        {event.careCount}
+                    </Label>
+                </Button>
 
                 {
                     event.isHost ? (
@@ -78,7 +74,7 @@ const EventDetailHeader = ({ event }: Props) => {
                                 color='red'
                                 floated='left'
                                 basic={event.status === EventStatus.Cancelled}
-                                disabled={event.status === EventStatus.Cancelled}
+                                disabled={event.status === EventStatus.Cancelled || event.beginTime! < new Date()}
                                 onClick={() => {
                                     modalStore.triggerConfirmation(
                                         "Are you sure you want to cancel this event ?", handleCancelEvent)
@@ -89,7 +85,7 @@ const EventDetailHeader = ({ event }: Props) => {
                             <Button
                                 color='orange'
                                 floated='right'
-                                disabled={event.status === EventStatus.Cancelled}
+                                disabled={event.status === EventStatus.Cancelled || event.beginTime! < new Date()}
                                 onClick={() => modalStore.openModal(<EventForm selectedEvent={selectedEvent} />)}>
                                 Manage Event
                             </Button>
@@ -98,14 +94,14 @@ const EventDetailHeader = ({ event }: Props) => {
                     ) : event.isGoing ? (
                         <Button
                             loading={loading}
-                            disabled={event.status === EventStatus.Cancelled}
+                            disabled={event.status === EventStatus.Cancelled || event.attendDeadline! < new Date()}
                             onClick={() => updateAttendance()}>
                             Cancel attendance
                         </Button>
                     ) : (
                         <Button
                             loading={loading}
-                            disabled={event.status === EventStatus.Cancelled}
+                            disabled={event.status === EventStatus.Cancelled || event.attendDeadline! < new Date()}
                             color='teal'
                             onClick={() => updateAttendance()}>
                             Join Event

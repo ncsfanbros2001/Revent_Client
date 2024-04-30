@@ -2,7 +2,7 @@ import "semantic-ui-css/semantic.min.css";
 import { Button, Container, Grid, Header, Loader, Segment } from "semantic-ui-react";
 import { useEffect, useState } from "react";
 import EventList from "../Components/Newsfeed/EventList";
-import { store, useStore } from "../Stores/store";
+import { useStore } from "../Stores/store";
 import { observer } from "mobx-react-lite";
 import EventFilter from "../Components/Newsfeed/EventFilter";
 import { PagingParams } from "../Interfaces/pagination";
@@ -45,10 +45,7 @@ const Newsfeed = () => {
                 ) : !loadingInitial && !loadingNext && eventListRegistry.size === 0 ? (
                     <Container textAlign="center" style={{ marginTop: 20 }}>
                         <Header as='h1' content='Oops ...! There is no event to display' />
-                        <Button content='Try Refresh' color="blue" icon='redo' onClick={() => {
-                            loadAllEvents()
-                            console.log(store.userStore.currentUser)
-                        }} />
+                        <Button content='Try Refresh' color="blue" icon='redo' onClick={() => loadAllEvents()} />
                     </Container>
                 ) : (
                     <InfiniteScroll

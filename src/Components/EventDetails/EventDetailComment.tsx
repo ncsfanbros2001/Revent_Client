@@ -84,7 +84,6 @@ const EventDetailComment = ({ eventID }: Props) => {
                                     <Comment.Text style={{ whiteSpace: 'pre-wrap' }}>
                                         {comment.content}
                                     </Comment.Text>
-
                                 </Comment.Content>
                             </Comment>
                         )) : (
