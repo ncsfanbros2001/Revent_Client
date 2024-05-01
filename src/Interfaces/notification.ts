@@ -3,3 +3,8 @@ export interface Notification {
     content: string,
     createdTime: string
 }
+
+export interface NotificationReceivers {
+    receiverIdList: string[]
+    content: string
+}

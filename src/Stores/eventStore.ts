@@ -3,7 +3,7 @@ import { EventFormValues, EventsModel } from "../Interfaces/event";
 import axiosAgent from "../API/axiosAgent";
 import { v4 as uuid } from 'uuid'
 import { store } from "./store";
-import { EventStatus } from "../Utilities/staticValues";
+import { EventStatus, Visibility } from "../Utilities/staticValues";
 import { Pagination, PagingParams } from "../Interfaces/pagination";
 import { Profile } from "../Interfaces/user";
 import { toast } from "react-toastify";
@@ -81,7 +81,7 @@ export default class EventStore {
     }
 
     get eventToList() { // Convert events to an array
-        return Array.from(this.eventListRegistry.values())
+        return Array.from(this.eventListRegistry.values()).filter(x => x.publicity !== Visibility.Private)
     }
 
     get axiosParams() {
@@ -188,6 +188,16 @@ export default class EventStore {
 
             this.setEvent(newEvent)
             this.setSelectedEvent(newEvent)
+
+            const currentUser = store.userStore.currentUser!
+            const followers = (await axiosAgent.ProfileActions.listFollowings(currentUser.userID, "followers"))
+                .map(follower => follower.userID)
+
+
+            store.notiicationStore.sendNotification({
+                receiverIdList: followers,
+                content: currentUser?.fullname + ' just post an event called "' + newEvent.title + '"'
+            })
         }
         catch (error) {
             console.log("Create event failed", error)
@@ -209,6 +219,15 @@ export default class EventStore {
                     this.setEvent(updatedEvent as EventsModel)
                     this.setSelectedEvent(updatedEvent as EventsModel)
                 }
+            })
+
+            const currentUser = store.userStore.currentUser!
+            const thisEvent = this.getEvent(event.eventID!)!
+            const guestsID = thisEvent.guests.map(x => x.userID)
+
+            store.notiicationStore.sendNotification({
+                receiverIdList: guestsID.filter(x => x !== currentUser.userID),
+                content: currentUser?.fullname + ' just update an event called "' + thisEvent.title + '"'
             })
 
             toast.success("Update Event Successfully")
@@ -278,6 +297,16 @@ export default class EventStore {
             runInAction(() => this.selectedEvent!.status = EventStatus.Cancelled)
 
             this.setEvent(this.selectedEvent!)
+
+            const currentUser = store.userStore.currentUser!
+            const thisEvent = this.getEvent(this.selectedEvent!.eventID)!
+            const guestsID = thisEvent.guests.map(x => x.userID)
+
+            store.notiicationStore.sendNotification({
+                receiverIdList: guestsID.filter(x => x !== currentUser.userID),
+                content: currentUser?.fullname + ' just cancelled an event called "' + thisEvent.title + '"'
+            })
+
         }
         catch (error) {
             console.log(error)
@@ -331,23 +360,11 @@ export default class EventStore {
             }
             else {
                 eventToUpdate.careCount--
-                eventToUpdate.cares.filter(x => x.userID === user?.userID)
+                eventToUpdate.cares.filter(x => x.userID !== user?.userID)
                 eventToUpdate.isCaring = false
             }
             this.eventListRegistry.set(eventToUpdate.eventID, eventToUpdate)
 
-            if (this.selectedEvent) {
-                if (this.selectedEvent.isCaring === false) {
-                    this.selectedEvent.careCount++
-                    this.selectedEvent.cares.push(new Care(user))
-                    this.selectedEvent.isCaring = true
-                }
-                else {
-                    this.selectedEvent.careCount--
-                    this.selectedEvent.cares.filter(x => x.userID !== user?.userID)
-                    this.selectedEvent.isCaring = false
-                }
-            }
         } catch (error) {
             toast.error("Error With Care")
         }

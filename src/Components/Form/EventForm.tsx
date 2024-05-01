@@ -137,7 +137,7 @@ const EventForm = (props: Props) => {
                                 content='Our Rules For Event'
                                 icon="list"
                                 color="blue"
-                                onClick={() => modalStore.openModal(<EventRules />)} />
+                                onClick={() => modalStore.openModal(<EventRules selectedEvent={props.selectedEvent} />)} />
                         </Form>
                     )
                 }

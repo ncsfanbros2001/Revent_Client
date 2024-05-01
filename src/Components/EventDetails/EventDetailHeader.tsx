@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { EventStatus } from "../../Utilities/staticValues";
 import { Fragment } from "react/jsx-runtime";
+import { Care } from "../../Interfaces/care";
 
 const eventImageStyle = {
     filter: 'brightness(80%)'
@@ -26,11 +27,25 @@ interface Props {
 }
 
 const EventDetailHeader = ({ event }: Props) => {
-    const { modalStore, eventStore } = useStore();
-    const { updateAttendance, loading, selectedEvent, cancelEvent } = eventStore
+    const { modalStore, eventStore, userStore } = useStore();
+    const { updateAttendance, loading, cancelEvent } = eventStore
 
     const handleCancelEvent = () => {
         cancelEvent().then(modalStore.closeConfirmation)
+    }
+
+    const handleCare = () => {
+        if (event.isCaring === false) {
+            event.careCount++
+            event.cares.push(new Care(userStore.currentUser!))
+            event.isCaring = true
+        }
+        else {
+            event.careCount--
+            event.cares.filter(x => x.userID !== userStore.currentUser!.userID)
+            event.isCaring = false
+        }
+        eventStore.careToEvent(event.eventID)
     }
 
     return (
@@ -61,7 +76,7 @@ const EventDetailHeader = ({ event }: Props) => {
                         color={event.isCaring ? 'blue' : 'teal'}
                         icon={event.isCaring ? 'star' : 'star outline'}
                         content='Care'
-                        onClick={() => eventStore.careToEvent(event.eventID)} />
+                        onClick={() => handleCare()} />
                     <Label basic color='blue' pointing='left'>
                         {event.careCount}
                     </Label>
@@ -72,7 +87,7 @@ const EventDetailHeader = ({ event }: Props) => {
                         <Fragment>
                             <Button
                                 color='red'
-                                floated='left'
+                                floated='right'
                                 basic={event.status === EventStatus.Cancelled}
                                 disabled={event.status === EventStatus.Cancelled || event.beginTime! < new Date()}
                                 onClick={() => {
@@ -86,7 +101,7 @@ const EventDetailHeader = ({ event }: Props) => {
                                 color='orange'
                                 floated='right'
                                 disabled={event.status === EventStatus.Cancelled || event.beginTime! < new Date()}
-                                onClick={() => modalStore.openModal(<EventForm selectedEvent={selectedEvent} />)}>
+                                onClick={() => modalStore.openModal(<EventForm selectedEvent={event} />)}>
                                 Manage Event
                             </Button>
                         </Fragment>

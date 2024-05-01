@@ -14,7 +14,7 @@ interface Props {
 const ProfileContent = ({ userProfile }: Props) => {
     const { profileStore } = useStore()
 
-    useEffect(() => { profileStore.getEventStatistics() }, [])
+    useEffect(() => { profileStore.getEventStatistics(profileStore.profile!.userID) }, [])
 
     const profileTabs = [
         { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> },

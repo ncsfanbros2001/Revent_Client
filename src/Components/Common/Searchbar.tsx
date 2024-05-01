@@ -7,6 +7,7 @@ import axiosAgent from "../../API/axiosAgent";
 import { IProfile } from "../../Interfaces/user";
 import { router } from "../../router/Routes";
 import { useLocation } from "react-router-dom";
+import { Roles } from "../../Utilities/staticValues";
 
 const Searchbar = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +62,7 @@ const Searchbar = () => {
                                     style={{ width: 50, height: 50, borderRadius: 5 }}
                                 />
                                 <Container className="names">
-                                    <b>{result.fullname}</b>
+                                    <b>{result.fullname} {result.role === Roles.Admin && '(Admin)'}</b>
                                     <span style={{ color: 'grey' }}>@{result.username}</span>
                                 </Container>
                             </div>

@@ -3,7 +3,7 @@ import axiosAgent from "../API/axiosAgent";
 import { toast } from "react-toastify";
 import { store } from "./store";
 import { NotificationStatus } from "../Utilities/staticValues";
-import { Notification } from "../Interfaces/notification";
+import { Notification, NotificationReceivers } from "../Interfaces/notification";
 
 export default class NotificationStore {
     notificationList: Notification[] = []
@@ -53,6 +53,13 @@ export default class NotificationStore {
                 runInAction(() => {
                     this.loadingNotifications = false
                 })
+            })
+    }
+
+    sendNotification = (sendInfo: NotificationReceivers) => {
+        axiosAgent.NotificationActions.sendNotifications(sendInfo)
+            .catch((error) => {
+                toast.error(error)
             })
     }
 }

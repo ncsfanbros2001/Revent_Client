@@ -42,6 +42,16 @@ const EventDetailInfo = ({ event }: Props) => {
                     </Grid.Column>
                 </Grid>
             </Segment>
+            <Segment attached>
+                <Grid verticalAlign='middle'>
+                    <Grid.Column width={1}>
+                        <Icon name='columns' size='large' color='teal' />
+                    </Grid.Column>
+                    <Grid.Column width={11}>
+                        <span>{event.category}</span>
+                    </Grid.Column>
+                </Grid>
+            </Segment>
         </Segment.Group>
     )
 }

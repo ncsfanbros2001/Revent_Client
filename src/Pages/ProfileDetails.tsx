@@ -12,6 +12,7 @@ const ProfileDetails = () => {
     const { profileStore } = useStore()
     const { loadProfile, loadingProfile, profile, setActiveTab } = profileStore
 
+
     useEffect(() => {
         if (userID) {
             loadProfile(userID)

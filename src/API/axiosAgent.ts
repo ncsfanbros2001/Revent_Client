@@ -6,7 +6,8 @@ import { store } from "../Stores/store";
 import { ChangePasswordModel, IProfile, LoginModel, RegisterModel, UpdateProfileModel, UserModel } from "../Interfaces/user";
 import { Photo } from "../Interfaces/photo";
 import { PaginatedResult } from "../Interfaces/pagination";
-import { Notification } from "../Interfaces/notification";
+import { Notification, NotificationReceivers } from "../Interfaces/notification";
+import { SendReportData } from "../Interfaces/report";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -27,7 +28,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await delay(500);
+    await delay(0);
     const pagination = response.headers["pagination"]
 
     if (pagination) {
@@ -153,8 +154,8 @@ const ProfileActions = {
     updateFollowing: (userID: string) => {
         return request.post(`/follow/${userID}`, {})
     },
-    statistics: () => {
-        return request.get<IStatistics>(`/Event/statistics`)
+    statistics: (userID: string) => {
+        return request.get<IStatistics>(`/Event/statistics/${userID}`)
     },
     userEvents: (predicate: string) => {
         return request.get<UserEvent[]>(`/Event/userEvents?predicate=${predicate}`)
@@ -173,11 +174,20 @@ const NotificationActions = {
     },
     getNotification: () => {
         return request.get<Notification[]>(`/Notification`)
-    }
+    },
+    sendNotifications: (sendInfo: NotificationReceivers) => {
+        return request.post<void>(`/Notification/send`, sendInfo)
+    },
+}
+
+const ReportActions = {
+    sendReport: (reportData: SendReportData) => {
+        return request.post<void>(`/Report`, reportData)
+    },
 }
 
 const axiosAgent = {
-    EventActions, AccountActions, ProfileActions, InteractActions, NotificationActions
+    EventActions, AccountActions, ProfileActions, InteractActions, NotificationActions, ReportActions
 }
 
 export default axiosAgent;

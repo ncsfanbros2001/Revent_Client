@@ -7,7 +7,6 @@ const ProfileEvents = () => {
     const { userStore, profileStore } = useStore()
     const { eventStatistics, loading } = profileStore
 
-
     return (
         <Tab.Pane loading={loading}>
             <Header as='h3' content={userStore.currentUser?.fullname + " Events Stats"} icon='chart bar' />

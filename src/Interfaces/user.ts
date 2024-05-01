@@ -6,6 +6,7 @@ export interface UserModel { // For the current user
     avatarURL: string
     updatedAt: string
     notificationStatus: string
+    role: string
     token: string
 }
 
@@ -42,6 +43,7 @@ export interface IProfile {
     avatarURL?: string
     biography: string
     profileVisibility: string
+    role: string
 
     followersCount: number
     followingCount: number
@@ -61,6 +63,7 @@ export class Profile implements IProfile { // For user details
         this.avatarURL = userProfile.avatarURL
         this.biography = userProfile.biography
         this.profileVisibility = userProfile.profileVisibility
+        this.role = userProfile.role
     }
 
     userID: string = ''
@@ -74,6 +77,7 @@ export class Profile implements IProfile { // For user details
     avatarURL?: string = ''
     biography: string = ''
     profileVisibility: string = ''
+    role: string = ''
 
     followersCount: number = 0
     followingCount: number = 0

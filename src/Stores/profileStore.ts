@@ -118,6 +118,14 @@ export default class ProfileStore {
                         following ? profile.followersCount++ : profile.followersCount--
                     }
                 })
+
+                if (following) {
+                    // Send notification to the user
+                    store.notiicationStore.sendNotification({
+                        receiverIdList: [userID],
+                        content: currentUser?.fullname + ' started following you'
+                    })
+                }
             })
         }
         catch (error) {
@@ -145,9 +153,9 @@ export default class ProfileStore {
         }
     }
 
-    getEventStatistics = () => {
+    getEventStatistics = (userID: string) => {
         this.loading = true
-        axiosAgent.ProfileActions.statistics()
+        axiosAgent.ProfileActions.statistics(userID)
             .then((response) => {
                 runInAction(() => {
                     this.eventStatistics = response

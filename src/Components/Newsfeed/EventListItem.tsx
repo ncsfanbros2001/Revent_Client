@@ -4,15 +4,16 @@ import { Link } from "react-router-dom"
 import { format } from "date-fns"
 import EventGuestList from "./EventGuestList"
 import { observer } from "mobx-react-lite"
-import { EventStatus } from "../../Utilities/staticValues"
+import { EventStatus, Roles } from "../../Utilities/staticValues"
 import { useStore } from "../../Stores/store"
+import ReportForm from "../Common/ReportForm"
 
 interface Props {
     event: EventsModel
 }
 
 const EventListItem = ({ event }: Props) => {
-    const { eventStore } = useStore()
+    const { eventStore, userStore, modalStore } = useStore()
 
     return (
         <Segment.Group style={{ margin: '20px 0px' }}>
@@ -77,7 +78,16 @@ const EventListItem = ({ event }: Props) => {
                     </Label>
                 </Button>
 
-                <Button as={Link} to={`/details/${event.eventID}`} color="teal" floated="right" content="View" />
+                {
+                    !event.isHost && userStore.currentUser?.role !== Roles.Admin &&
+                    (<Button
+                        color="red"
+                        content='Report'
+                        floated="right"
+                        icon='bullhorn'
+                        onClick={() => modalStore.openModal(<ReportForm event={event} />)} />)
+                }
+                <Button as={Link} to={`/details/${event.eventID}`} color="green" floated="right" content="View" icon='eye' />
             </Segment>
 
         </Segment.Group>

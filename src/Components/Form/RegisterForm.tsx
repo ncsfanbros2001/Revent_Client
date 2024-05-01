@@ -127,7 +127,7 @@ const RegisterForm = () => {
                             dateFormat='dd/MM/yyyy' />
 
                         <Button
-                            disabled={!isValid || !dirty || isSubmitting}
+                            disabled={!isValid || !dirty || isSubmitting || isLoading}
                             loading={isSubmitting || isLoading}
                             type='submit'
                             color='green'

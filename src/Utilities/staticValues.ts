@@ -1,7 +1,9 @@
 export enum EventStatus {
     NotYetStarted = "not yet started",
     Cancelled = "cancelled",
-    Suspended = "suspended"
+    Suspended = "suspended",
+    Occuring = "occuring",
+    Finished = "finished"
 }
 
 export enum Visibility {
@@ -18,4 +20,9 @@ export enum EmailSenderValues {
 export enum NotificationStatus {
     Enabled = 'on',
     Disabled = 'off'
+}
+
+export enum Roles {
+    Admin = 'admin',
+    Role = 'role'
 }
