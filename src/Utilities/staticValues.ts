@@ -24,5 +24,5 @@ export enum NotificationStatus {
 
 export enum Roles {
     Admin = 'admin',
-    Role = 'role'
+    User = 'user'
 }

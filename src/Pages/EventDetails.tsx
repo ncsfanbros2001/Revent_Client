@@ -8,12 +8,12 @@ import EventDetailHeader from '../Components/EventDetails/EventDetailHeader';
 import EventDetailInfo from '../Components/EventDetails/EventDetailInfo';
 import EventDetailComment from '../Components/EventDetails/EventDetailComment';
 import EventDetailGuestList from '../Components/EventDetails/EventDetailGuestList';
-import { EventStatus } from '../Utilities/staticValues';
+import { EventStatus, Roles } from '../Utilities/staticValues';
 import { router } from '../router/Routes';
 
 
 const EventDetails = () => {
-    const { eventStore } = useStore();
+    const { eventStore, userStore } = useStore();
     const { selectedEvent, loadOneEvent, loadingInitial } = eventStore
     const { eventID } = useParams()
 
@@ -24,7 +24,7 @@ const EventDetails = () => {
     }, [eventID])
 
     if (!selectedEvent || loadingInitial) return <LoadingComponent content='Loading Event...' /> // Not gonna happen 
-    if (selectedEvent.status === EventStatus.Suspended)
+    if (selectedEvent.status === EventStatus.Suspended && userStore.currentUser?.role !== Roles.Admin)
         return (
             <Dimmer active={true} inverted={false}>
                 <Header as='h2' icon inverted>

@@ -3,6 +3,7 @@ import { Profile } from "../../Interfaces/user"
 import { observer } from "mobx-react-lite"
 import { useStore } from "../../Stores/store"
 import { SyntheticEvent } from "react"
+import { Roles } from "../../Utilities/staticValues"
 
 interface Props {
     profile: Profile
@@ -18,7 +19,10 @@ const FollowButton = ({ profile }: Props) => {
         profile.following ? updateFollowing(userID, false) : updateFollowing(userID, true)
     }
 
-    if (userStore.currentUser?.userID === profile.userID) return null
+    if (userStore.currentUser?.userID === profile.userID
+        || userStore.currentUser?.role === Roles.Admin
+        || profile.role === Roles.Admin)
+        return null
     return (
         <Reveal animated="move">
             <Reveal.Content visible style={{ width: '100%' }}>

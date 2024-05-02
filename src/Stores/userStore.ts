@@ -5,6 +5,8 @@ import { store } from "./store";
 import { router } from "../router/Routes";
 import { Visibility } from "../Utilities/staticValues";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+import { error } from "console";
 
 export default class UserStore {
     currentUser: UserModel | null = null
@@ -31,14 +33,18 @@ export default class UserStore {
     }
 
     login = async (credentials: LoginModel) => {
-        const user = await axiosAgent.AccountActions.login(credentials)
-        store.commonStore.setToken(user.token)
+        await axiosAgent.AccountActions.login(credentials)
+            .then((response) => {
+                store.commonStore.setToken(response.token)
+                runInAction(() => this.currentUser = response)
 
-        runInAction(() => this.currentUser = user)
+                store.eventStore.setPredicate('all', 'true')
+                router.navigate('/')
+            })
+            .catch((error) => {
+                toast.error(error.response.data)
+            })
 
-        store.eventStore.setPredicate('all', 'true')
-
-        router.navigate('/')
     }
 
     logout = () => {
@@ -68,7 +74,7 @@ export default class UserStore {
                     toast.success("Update Successfully")
                 })
             })
-            .catch((error) => toast.error(error))
+            .catch((error) => toast.error(error.response.data))
             .finally(() => runInAction(() => { this.loading = false }))
     }
 
@@ -105,8 +111,15 @@ export default class UserStore {
 
     getUser = async () => {
         try {
-            const user = await axiosAgent.AccountActions.getCurrentUser()
-            runInAction(() => this.currentUser = user)
+            const token = jwtDecode(store.commonStore.token!)
+            if (new Date(Number(token.exp) * 1000) > new Date()) {
+                const user = await axiosAgent.AccountActions.getCurrentUser()
+                runInAction(() => this.currentUser = user)
+            }
+            else {
+                store.commonStore.token = null
+                localStorage.removeItem('userToken')
+            }
         }
         catch (error) {
             console.log(error)

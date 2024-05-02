@@ -4,12 +4,13 @@ import { Item, Label, List, Segment, Image, Button } from "semantic-ui-react"
 import { EventsModel } from "../../Interfaces/event"
 import { observer } from "mobx-react-lite"
 import { useStore } from "../../Stores/store"
+import { EventStatus } from "../../Utilities/staticValues"
 
 interface Props {
     event: EventsModel
 }
 
-const EventDetailGuestList = ({ event: { guests, host, eventID } }: Props) => {
+const EventDetailGuestList = ({ event: { guests, host, eventID, status } }: Props) => {
     const { userStore, eventStore } = useStore()
 
     if (!guests) return null
@@ -45,17 +46,18 @@ const EventDetailGuestList = ({ event: { guests, host, eventID } }: Props) => {
                                 {guest.following && <Item.Extra style={{ color: 'orange' }}>Following</Item.Extra>}
                             </Item.Content>
 
-                            {host?.userID === userStore.currentUser?.userID && guest.userID !== host?.userID && (
-                                <Button
-                                    color="red"
-                                    content='Remove'
-                                    icon='remove user'
-                                    size="mini"
-                                    floated="right"
-                                    onClick={() => eventStore.removeGuest(guest.userID, eventID)}
-                                    loading={eventStore.loading}
-                                    disabled={eventStore.loading} />
-                            )}
+                            {host?.userID === userStore.currentUser?.userID
+                                && guest.userID !== host?.userID && status !== EventStatus.Cancelled && (
+                                    <Button
+                                        color="red"
+                                        content='Remove'
+                                        icon='remove user'
+                                        size="mini"
+                                        floated="right"
+                                        onClick={() => eventStore.removeGuest(guest.userID, eventID)}
+                                        loading={eventStore.loading}
+                                        disabled={eventStore.loading} />
+                                )}
                         </Item>
                     ))}
 

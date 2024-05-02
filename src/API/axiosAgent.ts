@@ -7,7 +7,7 @@ import { ChangePasswordModel, IProfile, LoginModel, RegisterModel, UpdateProfile
 import { Photo } from "../Interfaces/photo";
 import { PaginatedResult } from "../Interfaces/pagination";
 import { Notification, NotificationReceivers } from "../Interfaces/notification";
-import { SendReportData } from "../Interfaces/report";
+import { PassJudgementData, Report, SendReportData } from "../Interfaces/report";
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -157,8 +157,8 @@ const ProfileActions = {
     statistics: (userID: string) => {
         return request.get<IStatistics>(`/Event/statistics/${userID}`)
     },
-    userEvents: (predicate: string) => {
-        return request.get<UserEvent[]>(`/Event/userEvents?predicate=${predicate}`)
+    userEvents: (userID: string, predicate: string) => {
+        return request.get<UserEvent[]>(`/Event/userEvents/${userID}?predicate=${predicate}`)
     }
 }
 
@@ -184,6 +184,12 @@ const ReportActions = {
     sendReport: (reportData: SendReportData) => {
         return request.post<void>(`/Report`, reportData)
     },
+    getReports: () => {
+        return request.get<Report[]>(`/Report`)
+    },
+    passJudgement: (passJudgementData: PassJudgementData) => {
+        return request.put<void>(`/Report`, passJudgementData)
+    }
 }
 
 const axiosAgent = {

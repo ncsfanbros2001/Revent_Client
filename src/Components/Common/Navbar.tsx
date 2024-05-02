@@ -4,6 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
 import Searchbar from "./Searchbar";
+import { Roles } from "../../Utilities/staticValues";
 
 const Navbar = () => {
     const { modalStore, userStore } = useStore();
@@ -18,19 +19,28 @@ const Navbar = () => {
                     <img src="/logo.png" alt="logo" style={{ marginRight: 8 }} /> <b>REVENT</b>
                 </Menu.Item>
 
-                <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
+                {currentUser?.role === Roles.User ? (
+                    <>
+                        <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
-                <Menu.Item>
-                    <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
-                </Menu.Item>
+                        <Menu.Item>
+                            <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
+                        </Menu.Item>
 
-                <Menu.Item>
-                    <Searchbar />
-                </Menu.Item>
+                        <Menu.Item>
+                            <Searchbar />
+                        </Menu.Item>
+                    </>
+                ) : (
+                    <Menu.Item name="Admin's report management" />
+                )}
 
                 <Menu.Item position="right">
                     <Image src={currentUser?.avatarURL || '/public/user.png'} avatar spaced='right' />
-                    <Dropdown pointing='top left' text={currentUser?.fullname}>
+                    <Dropdown
+                        pointing='top left'
+                        text={currentUser!.fullname + (currentUser!.role === Roles.Admin ? ' (Admin)' : '')}
+                    >
                         <Dropdown.Menu>
                             <Dropdown.Item as={Link} to={`/profiles/${currentUser?.userID}`} text="My Profile" icon="user" />
                             <Dropdown.Item onClick={() => logout()} text='Logout' icon='power' />

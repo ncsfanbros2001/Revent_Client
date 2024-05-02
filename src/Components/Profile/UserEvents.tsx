@@ -16,11 +16,11 @@ const UserEvents = () => {
     ]
 
     useEffect(() => {
-        loadUserEvents()
+        loadUserEvents(profile!.userID)
     }, [loadUserEvents, profile])
 
     const handleTabChanges = (_: SyntheticEvent, data: TabProps) => {
-        loadUserEvents(panes[data.activeIndex as number].pane.key)
+        loadUserEvents(profile!.userID, panes[data.activeIndex as number].pane.key)
     }
 
     return (

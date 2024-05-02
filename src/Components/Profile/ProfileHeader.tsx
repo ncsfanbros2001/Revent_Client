@@ -4,13 +4,14 @@ import { observer } from "mobx-react-lite"
 import { useStore } from "../../Stores/store"
 import AvatarCard from "./AvatarCard"
 import FollowButton from "./FollowButton"
+import { Roles } from "../../Utilities/staticValues"
 
 interface Props {
     userProfile: IProfile
 }
 
 const ProfileHeader = ({ userProfile }: Props) => {
-    const { modalStore } = useStore()
+    const { modalStore, userStore, profileStore } = useStore()
 
     return (
         <Segment>
@@ -27,7 +28,9 @@ const ProfileHeader = ({ userProfile }: Props) => {
                                 )} />
 
                             <Item.Content verticalAlign="middle">
-                                <Header as='h1' content={userProfile.fullname} />
+                                <Header as='h1'
+                                    content={userProfile.fullname + (userProfile.role === Roles.Admin && ' (Admin)')}
+                                />
                                 <p style={{ color: 'gray' }}>@{userProfile.username}</p>
                             </Item.Content>
                         </Item>
@@ -35,13 +38,16 @@ const ProfileHeader = ({ userProfile }: Props) => {
                 </Grid.Column>
 
                 <Grid.Column width={4}>
-                    <Statistic.Group widths={2}>
-                        <Statistic label='Followers' value={userProfile.followersCount} color="green" />
-                        <Statistic label='Following' value={userProfile.followingCount} color="blue" />
-                    </Statistic.Group>
+                    {userStore.currentUser?.role !== Roles.Admin && profileStore.profile!.role !== Roles.Admin && (
+                        <>
+                            <Statistic.Group widths={2}>
+                                <Statistic label='Followers' value={userProfile.followersCount} color="green" />
+                                <Statistic label='Following' value={userProfile.followingCount} color="blue" />
+                            </Statistic.Group>
 
-                    <Divider />
-
+                            <Divider />
+                        </>
+                    )}
                     <FollowButton profile={userProfile} />
                 </Grid.Column>
             </Grid>

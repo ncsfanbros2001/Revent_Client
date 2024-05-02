@@ -5,7 +5,7 @@ import { format } from "date-fns"
 import { IProfile } from "../../Interfaces/user"
 import { observer } from "mobx-react-lite"
 import { Fragment } from "react/jsx-runtime"
-import { Visibility } from "../../Utilities/staticValues"
+import { Roles, Visibility } from "../../Utilities/staticValues"
 import ChangePasswordForm from "../Form/ChangePasswordForm"
 
 interface Props {
@@ -19,7 +19,6 @@ const ProfileAbout = ({ userProfile }: Props) => {
     return (
         <Tab.Pane>
             <Header as='h3' content={"About " + userProfile?.fullname} icon='info circle' />
-
             {
                 userProfile.profileVisibility === Visibility.Private && userProfile.userID !== userStore.currentUser?.userID ?
                     (
@@ -59,13 +58,15 @@ const ProfileAbout = ({ userProfile }: Props) => {
                         <Grid>
                             <Grid.Row verticalAlign="middle">
                                 <Grid.Column width={11} floated="left">
-                                    <Button
-                                        icon='user circle'
-                                        disabled={checkLastUpdate}
-                                        content={!checkLastUpdate ? 'Manage Profile'
-                                            : `You can update again on ${format(nextUpdateDate, "dd/MM/yyyy")}`}
-                                        color="blue"
-                                        onClick={() => modalStore.openModal(<UpdateProfileForm />)} />
+                                    {userStore.currentUser.role !== Roles.Admin && (
+                                        <Button
+                                            icon='user circle'
+                                            disabled={checkLastUpdate}
+                                            content={!checkLastUpdate ? 'Manage Profile'
+                                                : `You can update again on ${format(nextUpdateDate, "dd/MM/yyyy")}`}
+                                            color="blue"
+                                            onClick={() => modalStore.openModal(<UpdateProfileForm />)} />
+                                    )}
                                     <Button
                                         icon='edit'
                                         content='Change Password'
@@ -74,11 +75,13 @@ const ProfileAbout = ({ userProfile }: Props) => {
                                 </Grid.Column>
 
                                 <Grid.Column width={5} floated="right">
-                                    <Checkbox
-                                        toggle
-                                        label={'Publicity Mode: ' + userProfile.profileVisibility}
-                                        defaultChecked={userProfile.profileVisibility === Visibility.Public}
-                                        onChange={() => updateProfileVisibility()} />
+                                    {userStore.currentUser.role !== Roles.Admin && (
+                                        <Checkbox
+                                            toggle
+                                            label={'Publicity Mode: ' + userProfile.profileVisibility}
+                                            defaultChecked={userProfile.profileVisibility === Visibility.Public}
+                                            onChange={() => updateProfileVisibility()} />
+                                    )}
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>

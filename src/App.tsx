@@ -39,7 +39,6 @@ const App = () => {
                     <Container style={{ marginTop: "6em" }}>
                         <Outlet />
                     </Container>
-                    {/* <Footer /> */}
                 </>
             )}
         </Fragment>

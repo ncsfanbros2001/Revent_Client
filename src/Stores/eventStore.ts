@@ -189,15 +189,17 @@ export default class EventStore {
             this.setEvent(newEvent)
             this.setSelectedEvent(newEvent)
 
-            const currentUser = store.userStore.currentUser!
-            const followers = (await axiosAgent.ProfileActions.listFollowings(currentUser.userID, "followers"))
-                .map(follower => follower.userID)
+            if (newEvent.publicity === Visibility.Public) {
+                const currentUser = store.userStore.currentUser!
+                const followers = (await axiosAgent.ProfileActions.listFollowings(currentUser.userID, "followers"))
+                    .map(follower => follower.userID)
 
 
-            store.notiicationStore.sendNotification({
-                receiverIdList: followers,
-                content: currentUser?.fullname + ' just post an event called "' + newEvent.title + '"'
-            })
+                store.notiicationStore.sendNotification({
+                    receiverIdList: followers,
+                    content: currentUser?.fullname + ' just post an event called "' + newEvent.title + '"'
+                })
+            }
         }
         catch (error) {
             console.log("Create event failed", error)
@@ -221,14 +223,16 @@ export default class EventStore {
                 }
             })
 
-            const currentUser = store.userStore.currentUser!
-            const thisEvent = this.getEvent(event.eventID!)!
-            const guestsID = thisEvent.guests.map(x => x.userID)
+            if (event.publicity === Visibility.Public) {
+                const currentUser = store.userStore.currentUser!
+                const thisEvent = this.getEvent(event.eventID!)!
+                const guestsID = thisEvent.guests.map(x => x.userID)
 
-            store.notiicationStore.sendNotification({
-                receiverIdList: guestsID.filter(x => x !== currentUser.userID),
-                content: currentUser?.fullname + ' just update an event called "' + thisEvent.title + '"'
-            })
+                store.notiicationStore.sendNotification({
+                    receiverIdList: guestsID.filter(x => x !== currentUser.userID),
+                    content: currentUser?.fullname + ' just update an event called "' + thisEvent.title + '"'
+                })
+            }
 
             toast.success("Update Event Successfully")
         }

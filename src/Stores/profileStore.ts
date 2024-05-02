@@ -167,9 +167,9 @@ export default class ProfileStore {
             .finally(() => runInAction(() => this.loading = false))
     }
 
-    loadUserEvents = (predicate?: string) => {
+    loadUserEvents = (userID: string, predicate?: string) => {
         this.loading = true
-        axiosAgent.ProfileActions.userEvents(predicate!)
+        axiosAgent.ProfileActions.userEvents(userID, predicate!)
             .then((response) => {
                 runInAction(() => {
                     this.userEvents = response

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { Modal } from "semantic-ui-react"
+import { Button, Modal } from "semantic-ui-react"
 import { useStore } from "../../Stores/store"
 
 const ModalContainer = () => {
@@ -7,6 +7,7 @@ const ModalContainer = () => {
 
     return (
         <Modal open={modalStore.modal.open} onClose={() => modalStore.closeModal} size="large">
+            <Button icon='x' color="red" onClick={() => modalStore.closeModal()} />
             {modalStore.modal.body}
         </Modal>
     )

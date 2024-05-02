@@ -61,7 +61,6 @@ const Login = () => {
                                     async (values, { setErrors }) => {
                                         return await userStore.login(values)
                                             .catch(() => {
-                                                setErrors({ error: "Incorrect credentials" })
                                                 setFailedLoginAttempt(failedLoginAttempt + 1)
 
                                                 if (failedLoginAttempt === 4) {

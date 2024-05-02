@@ -8,7 +8,7 @@ interface Modal {
 interface ConfirmBoxModal {
     isOpen: boolean;
     content: string | null
-    method: (() => void) | null;
+    method: any;
 }
 
 

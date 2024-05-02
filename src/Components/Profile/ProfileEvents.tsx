@@ -4,12 +4,12 @@ import { observer } from "mobx-react-lite"
 import UserEvents from "./UserEvents"
 
 const ProfileEvents = () => {
-    const { userStore, profileStore } = useStore()
+    const { profileStore } = useStore()
     const { eventStatistics, loading } = profileStore
 
     return (
         <Tab.Pane loading={loading}>
-            <Header as='h3' content={userStore.currentUser?.fullname + " Events Stats"} icon='chart bar' />
+            <Header as='h3' content={profileStore.profile?.fullname + " Events Stats"} icon='chart bar' />
 
             <Table celled>
                 <Table.Header>

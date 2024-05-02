@@ -6,6 +6,7 @@ import ProfileAbout from "./ProfileAbout"
 import { IProfile } from "../../Interfaces/user"
 import ProfileEvents from "./ProfileEvents"
 import { useEffect } from "react"
+import { Roles } from "../../Utilities/staticValues"
 
 interface Props {
     userProfile: IProfile
@@ -14,14 +15,21 @@ interface Props {
 const ProfileContent = ({ userProfile }: Props) => {
     const { profileStore } = useStore()
 
-    useEffect(() => { profileStore.getEventStatistics(profileStore.profile!.userID) }, [])
+    useEffect(() => {
+        profileStore.getEventStatistics(profileStore.profile!.userID)
+    }, [])
 
-    const profileTabs = [
-        { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> },
+    const adminProfileTabs = [
+        { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> }
+    ]
+
+    const userProfileTabs = [
         { menuItem: "Events", render: () => <ProfileEvents /> },
         { menuItem: "Followers", render: () => <ProfileFollowings /> },
-        { menuItem: "Following", render: () => <ProfileFollowings /> },
+        { menuItem: "Following", render: () => <ProfileFollowings /> }
     ]
+
+    const profileTabs = [...adminProfileTabs, ...(profileStore.profile!.role! === Roles.User ? userProfileTabs : [])]
 
     return (
         <Tab
