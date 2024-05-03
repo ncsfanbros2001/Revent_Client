@@ -3,7 +3,7 @@ export enum EventStatus {
     Cancelled = "cancelled",
     Suspended = "suspended",
     Occuring = "occuring",
-    Finished = "finished"
+    Finished = "finished",
 }
 
 export enum Visibility {

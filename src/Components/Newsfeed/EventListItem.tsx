@@ -19,9 +19,19 @@ const EventListItem = ({ event }: Props) => {
         <Segment.Group style={{ margin: '20px 0px' }}>
             <Segment>
                 {
-                    event.status === EventStatus.Cancelled &&
-                    <Label attached="top" color="red" content="Cancelled" style={{ textAlign: 'center' }} />
+                    event.status === EventStatus.Cancelled ? (
+                        <Label attached="top" color="red" content="Cancelled" style={{ textAlign: 'center' }} />
+                    ) : (
+                        event.attendDeadline! < new Date() && event.beginTime! > new Date() ? (
+                            <Label attached="top" color="green" content="About to Begin" style={{ textAlign: 'center' }} />
+                        ) : event.beginTime! < new Date() && event.endTime! > new Date() ? (
+                            <Label attached="top" color="blue" content="Occuring" style={{ textAlign: 'center' }} />
+                        ) : event.endTime! < new Date() ? (
+                            <Label attached="top" color="orange" content="Finished" style={{ textAlign: 'center' }} />
+                        ) : null
+                    )
                 }
+
                 <Item.Group>
                     <Item>
                         <Item.Image
@@ -54,7 +64,7 @@ const EventListItem = ({ event }: Props) => {
             </Segment>
 
             <Segment>
-                <Icon name="clock" /> {format(event.beginTime!, 'dd MMM yyyy h:mm aa')}
+                <Icon name="clock" /> {format(event.beginTime!, 'dd MMM yyyy h:mm aa')} - {format(event.endTime!, 'dd MMM yyyy h:mm aa')}
                 <br />
                 <Icon name="marker" /> {event.location}
             </Segment>
@@ -81,6 +91,7 @@ const EventListItem = ({ event }: Props) => {
                 {
                     !event.isHost && userStore.currentUser?.role !== Roles.Admin &&
                     (<Button
+                        disabled={event.status === EventStatus.Cancelled}
                         color="red"
                         content='Report'
                         floated="right"

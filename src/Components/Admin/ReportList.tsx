@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { useEffect } from "react"
 import { useStore } from "../../Stores/store"
-import { Button, Grid, Icon, Item, Segment } from "semantic-ui-react"
+import { Button, Grid, Header, Icon, Item, Segment } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 import LoadingComponent from "../Common/LoadingComponent"
 import { format, formatDistanceToNow } from "date-fns"
@@ -16,7 +16,7 @@ const ReportList = () => {
         getReports()
     }, [])
 
-    if (loading || reports.length === 0) return <LoadingComponent content="Loading Reports..." />
+    if (loading) return <LoadingComponent content="Loading Reports..." />
     return (
         <Grid.Row style={{ display: "flex", flexDirection: "column" }}>
             <Grid.Column width={10}>
@@ -25,7 +25,7 @@ const ReportList = () => {
                         <Segment>
                             <Item.Group>
                                 <Item>
-                                    <Item.Image size='tiny' circular src={report.reporter.avatarURL || './public/user.png'} />
+                                    <Item.Image size='tiny' circular src={report.reporter.avatarURL || '/public/user.png'} />
 
                                     <Item.Content>
                                         <Item.Header as={Link}>{report.reporter.fullname}</Item.Header>
@@ -88,7 +88,7 @@ const ReportList = () => {
                                 positive
                                 onClick={() => {
                                     eventStore.loadOneEvent(report.event.eventID)
-                                        .then(() => modalStore.openModal(<Segment><EventDetails /></Segment>))
+                                        .then(() => modalStore.openModal(<Segment><EventDetails /></Segment>, true))
                                 }} />
 
                             <Button
@@ -109,7 +109,7 @@ const ReportList = () => {
                         </Segment>
                     </Segment.Group>
                 )) : (
-                    <p>Congratulations ! There are no reports for now !</p>
+                    <Header as='h1' content='Congratulations ! There are no reports for now !' />
                 )}
 
             </Grid.Column>

@@ -29,7 +29,7 @@ const ProfileHeader = ({ userProfile }: Props) => {
 
                             <Item.Content verticalAlign="middle">
                                 <Header as='h1'
-                                    content={userProfile.fullname + (userProfile.role === Roles.Admin && ' (Admin)')}
+                                    content={userProfile.fullname + (userProfile.role === Roles.Admin ? ' (Admin)' : '')}
                                 />
                                 <p style={{ color: 'gray' }}>@{userProfile.username}</p>
                             </Item.Content>

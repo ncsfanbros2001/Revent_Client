@@ -47,6 +47,7 @@ const EventDetailGuestList = ({ event: { guests, host, eventID, status } }: Prop
                             </Item.Content>
 
                             {host?.userID === userStore.currentUser?.userID
+                                && eventStore.selectedEvent?.attendDeadline! < new Date()
                                 && guest.userID !== host?.userID && status !== EventStatus.Cancelled && (
                                     <Button
                                         color="red"

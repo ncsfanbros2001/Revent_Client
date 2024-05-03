@@ -34,7 +34,7 @@ const Newsfeed = () => {
         }
 
         if (userStore.currentUser?.role !== Roles.Admin) {
-            loadAllEvents()
+            loadAllEvents().then(() => setLoadingNext(false))
         }
     }, []);
 

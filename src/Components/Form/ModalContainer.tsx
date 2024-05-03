@@ -7,7 +7,7 @@ const ModalContainer = () => {
 
     return (
         <Modal open={modalStore.modal.open} onClose={() => modalStore.closeModal} size="large">
-            <Button icon='x' color="red" onClick={() => modalStore.closeModal()} />
+            {modalStore.modal.showClose && <Button icon='x' color="red" onClick={() => modalStore.closeModal()} />}
             {modalStore.modal.body}
         </Modal>
     )

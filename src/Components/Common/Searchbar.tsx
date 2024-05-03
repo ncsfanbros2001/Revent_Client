@@ -56,7 +56,7 @@ const Searchbar = () => {
                                 onClick={() => router.navigate(`/profiles/${result.userID}`)}
                             >
                                 <Image
-                                    src={result.avatarURL || './public/user.png'}
+                                    src={result.role !== Roles.Admin ? result.avatarURL : '/public/user.png'}
                                     className="user-avatar"
                                     verticalAlign="middle"
                                     style={{ width: 50, height: 50, borderRadius: 5 }}

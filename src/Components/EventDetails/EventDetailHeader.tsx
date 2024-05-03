@@ -36,24 +36,35 @@ const EventDetailHeader = ({ event }: Props) => {
 
     const handleCare = () => {
         if (event.isCaring === false) {
-            event.careCount++
+            eventStore.careToEvent(event.eventID)
             event.cares.push(new Care(userStore.currentUser!))
             event.isCaring = true
         }
         else {
-            event.careCount--
+            eventStore.careToEvent(event.eventID)
             event.cares.filter(x => x.userID !== userStore.currentUser!.userID)
             event.isCaring = false
         }
-        eventStore.careToEvent(event.eventID)
     }
 
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{ padding: '0' }}>
                 {
-                    event.status === EventStatus.Cancelled && <Label
-                        style={{ position: "absolute", zIndex: 1000, left: -14, top: 20 }} ribbon color="red" content="Cancelled" />
+                    event.status === EventStatus.Cancelled ? (<Label
+                        style={{ position: "absolute", zIndex: 2, left: -14, top: 20 }} ribbon color="red" content="Cancelled" />
+                    ) : (
+                        event.attendDeadline! < new Date() && event.beginTime! > new Date() ? (
+                            <Label color="green" content="About to Begin"
+                                style={{ position: "absolute", zIndex: 2, left: -14, top: 20 }} ribbon />
+                        ) : event.beginTime! < new Date() && event.endTime! > new Date() ? (
+                            <Label color="blue" content="Occuring"
+                                style={{ position: "absolute", zIndex: 2, left: -14, top: 20 }} ribbon />
+                        ) : event.endTime! < new Date() ? (
+                            <Label color="orange" content="Finished"
+                                style={{ position: "absolute", zIndex: 2, left: -14, top: 20 }} ribbon />
+                        ) : null
+                    )
                 }
                 <Image src='/public/travel.jpg' fluid style={eventImageStyle} />
                 <Segment style={eventImageTextStyle} basic>

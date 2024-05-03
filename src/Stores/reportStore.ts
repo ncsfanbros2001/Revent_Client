@@ -27,8 +27,11 @@ export default class ReportStore {
                                 + ". The event will be temporarily suspended until we make our final decision. Thank you for your cooperation"
                         })
                     })
+                store.eventStore.eventToList.filter(x => x.eventID !== violatedEventID)
                 toast.success("Report has been sended to the admin")
+                store.eventStore.loadAllEvents()
             })
+            //.then(() => store.eventStore.loadAllEvents())
             .catch(() => toast.error("Can't send report"))
             .finally(() => store.modalStore.closeModal())
     }

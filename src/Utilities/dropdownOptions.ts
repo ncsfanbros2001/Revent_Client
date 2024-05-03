@@ -4,6 +4,7 @@ export const eventCategoryOptions = [
     { text: "Culture", value: "culture" },
     { text: "Works", value: "works" },
     { text: "Gaming", value: "gaming" },
+    { text: "Travel", value: "travel" },
 ]
 
 export const genderOptions = [

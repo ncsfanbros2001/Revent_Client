@@ -2,7 +2,8 @@ import { makeAutoObservable } from "mobx"
 
 interface Modal {
     open: boolean;
-    body: JSX.Element | null
+    body: JSX.Element | null,
+    showClose: boolean;
 }
 
 interface ConfirmBoxModal {
@@ -15,7 +16,8 @@ interface ConfirmBoxModal {
 export default class ModalStore {
     modal: Modal = {
         open: false,
-        body: null
+        body: null,
+        showClose: false
     }
 
     confirmModal: ConfirmBoxModal = {
@@ -28,14 +30,16 @@ export default class ModalStore {
         makeAutoObservable(this)
     }
 
-    openModal = (content: JSX.Element) => {
+    openModal = (content: JSX.Element, showClose: boolean = false) => {
         this.modal.open = true
         this.modal.body = content
+        this.modal.showClose = showClose
     }
 
     closeModal = () => {
         this.modal.open = false
         this.modal.body = null
+        this.modal.showClose = false
     }
 
     triggerConfirmation = (content: string, method: () => void) => {
