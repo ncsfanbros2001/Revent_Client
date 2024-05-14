@@ -20,11 +20,11 @@ const ProfileContent = ({ userProfile }: Props) => {
     }, [])
 
     const adminProfileTabs = [
-        { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> }
+        { menuItem: "About", render: () => <ProfileAbout userProfile={userProfile} /> },
+        { menuItem: "Events", render: () => <ProfileEvents /> }
     ]
 
     const userProfileTabs = [
-        { menuItem: "Events", render: () => <ProfileEvents /> },
         { menuItem: "Followers", render: () => <ProfileFollowings /> },
         { menuItem: "Following", render: () => <ProfileFollowings /> }
     ]

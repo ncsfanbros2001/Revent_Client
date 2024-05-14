@@ -81,7 +81,9 @@ export default class EventStore {
     }
 
     get eventToList() { // Convert events to an array
-        return Array.from(this.eventListRegistry.values()).filter(x => x.publicity !== Visibility.Private || x.status === EventStatus.Suspended)
+        return Array.from(this.eventListRegistry.values())
+            .filter(x => x.publicity !== Visibility.Private || x.status === EventStatus.Suspended)
+            .sort((a, b) => Number(b.host!.following) - Number(a.host!.following))
     }
 
     get axiosParams() {

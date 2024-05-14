@@ -64,9 +64,15 @@ const EventListItem = ({ event }: Props) => {
             </Segment>
 
             <Segment>
-                <Icon name="clock" /> {format(event.beginTime!, 'dd MMM yyyy h:mm aa')} - {format(event.endTime!, 'dd MMM yyyy h:mm aa')}
-                <br />
                 <Icon name="marker" /> {event.location}
+                <br />
+                <Icon name="clock" /> {format(event.beginTime!, 'dd MMM yyyy h:mm aa')} - {format(event.endTime!, 'dd MMM yyyy h:mm aa')}
+                {event.createdTime !== event.updatedAt && (
+                    <>
+                        <br />
+                        <b style={{ color: 'red' }}>(This event's last update was at {format(event.updatedAt!, 'dd MMM yyyy h:mm aa')})</b>
+                    </>
+                )}
             </Segment>
 
             <Segment secondary>
@@ -83,7 +89,7 @@ const EventListItem = ({ event }: Props) => {
                         icon={event.isCaring ? 'star' : 'star outline'}
                         content='Care'
                         onClick={() => eventStore.careToEvent(event.eventID)} />
-                    <Label basic color='blue' pointing='left'>
+                    <Label basic color={event.isCaring ? 'blue' : 'teal'} pointing='left'>
                         {event.careCount}
                     </Label>
                 </Button>

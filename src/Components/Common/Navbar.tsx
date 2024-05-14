@@ -19,20 +19,20 @@ const Navbar = () => {
                     <img src="/logo.png" alt="logo" style={{ marginRight: 8 }} /> <b>REVENT</b>
                 </Menu.Item>
 
-                {currentUser?.role === Roles.User ? (
-                    <>
-                        <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
+                <Menu.Item name="Notifications" as={NavLink} to='/notifications' />
 
-                        <Menu.Item>
-                            <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
-                        </Menu.Item>
+                {currentUser?.role === Roles.Admin && (
+                    <Menu.Item name="Reports" as={NavLink} to='/reports' />
+                )}
 
-                        <Menu.Item>
-                            <Searchbar />
-                        </Menu.Item>
-                    </>
-                ) : (
-                    <Menu.Item name="Admin's report management" />
+                <Menu.Item>
+                    <Button icon="plus circle" color="green" content="Create Event" onClick={() => openModal(<EventForm />)} />
+                </Menu.Item>
+
+                {currentUser?.role !== Roles.Admin && (
+                    <Menu.Item>
+                        <Searchbar />
+                    </Menu.Item>
                 )}
 
                 <Menu.Item position="right">

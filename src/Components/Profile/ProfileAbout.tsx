@@ -42,10 +42,12 @@ const ProfileAbout = ({ userProfile }: Props) => {
                                 </List>
                             </Container>
 
-                            <Segment>
-                                <Header as='h2' content='Biography' />
-                                <p>{userProfile.biography}</p>
-                            </Segment>
+                            {userProfile.role === Roles.User && (
+                                <Segment>
+                                    <Header as='h2' content='Biography' />
+                                    <p>{userProfile.biography}</p>
+                                </Segment>
+                            )}
                         </Fragment>
                     )
             }

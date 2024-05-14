@@ -25,10 +25,10 @@ const EventDetailGuestList = ({ event: { guests, host, eventID, status } }: Prop
                 color='teal'>
                 {guests.length} {guests.length === 1 ? "Person" : 'Peoples'} Going
             </Segment>
-            <Segment attached>
-                <List relaxed divided>
+            <Segment attached >
+                <List relaxed divided style={{ maxHeight: 500, overflowY: 'auto' }}>
                     {guests.map((guest) => (
-                        <Item style={{ position: 'relative' }} key={guest.userID}>
+                        <Item style={{ position: 'relative', width: '90%' }} key={guest.userID}>
                             {guest.userID === host?.userID &&
                                 <Label
                                     style={{ position: 'absolute' }}

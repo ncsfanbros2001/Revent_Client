@@ -5,7 +5,7 @@ import { useStore } from "../../Stores/store";
 import EventForm from "../Form/EventForm";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
-import { EventStatus, Roles } from "../../Utilities/staticValues";
+import { EventStatus } from "../../Utilities/staticValues";
 import { Fragment } from "react/jsx-runtime";
 import { Care } from "../../Interfaces/care";
 
@@ -76,29 +76,30 @@ const EventDetailHeader = ({ event }: Props) => {
                                 <p>
                                     Hosted by <strong><Link to={`/profiles/${event.host?.userID}`}>{event.host?.fullname}</Link></strong>
                                 </p>
+                                {event.createdTime !== event.updatedAt && (
+                                    <b>
+                                        (This event's last update was at {format(event.updatedAt!, 'dd MMM yyyy h:mm aa')})
+                                    </b>
+                                )}
                             </Item.Content>
                         </Item>
                     </Item.Group>
                 </Segment>
             </Segment>
             <Segment clearing attached='bottom'>
-                {
-                    userStore.currentUser?.role !== Roles.Admin && (
-                        <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled || event.isHost}>
-                            <Button
-                                color={event.isCaring ? 'blue' : 'teal'}
-                                icon={event.isCaring ? 'star' : 'star outline'}
-                                content='Care'
-                                onClick={() => handleCare()} />
-                            <Label basic color='blue' pointing='left'>
-                                {event.careCount}
-                            </Label>
-                        </Button>
-                    )
-                }
+                <Button as='div' labelPosition='right' disabled={event.status === EventStatus.Cancelled || event.isHost}>
+                    <Button
+                        color={event.isCaring ? 'blue' : 'teal'}
+                        icon={event.isCaring ? 'star' : 'star outline'}
+                        content='Care'
+                        onClick={() => handleCare()} />
+                    <Label basic color='blue' pointing='left'>
+                        {event.careCount}
+                    </Label>
+                </Button>
 
                 {
-                    event.isHost && userStore.currentUser?.role !== Roles.Admin ? (
+                    event.isHost ? (
                         <Fragment>
                             <Button
                                 color='red'
@@ -120,7 +121,7 @@ const EventDetailHeader = ({ event }: Props) => {
                                 Manage Event
                             </Button>
                         </Fragment>
-                    ) : event.isGoing && userStore.currentUser?.role !== Roles.Admin ? (
+                    ) : event.isGoing ? (
                         <Button
                             loading={loading}
                             disabled={event.status === EventStatus.Cancelled || event.attendDeadline! < new Date()}
@@ -128,7 +129,7 @@ const EventDetailHeader = ({ event }: Props) => {
                         >
                             {event.attendDeadline! < new Date() ? 'Attend Deadline Is Due' : 'Cancel attendance'}
                         </Button>
-                    ) : !event.isGoing && userStore.currentUser?.role !== Roles.Admin ? (
+                    ) : !event.isGoing ? (
                         <Button
                             loading={loading}
                             disabled={event.status === EventStatus.Cancelled || event.attendDeadline! < new Date()}

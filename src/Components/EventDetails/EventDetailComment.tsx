@@ -7,7 +7,6 @@ import { Formik, Form } from "formik"
 import TextAreaInput from "../FormikControls/TextAreaInput"
 import * as Yup from 'yup'
 import { formatDistanceToNow } from "date-fns"
-import { Roles } from "../../Utilities/staticValues"
 
 interface Props {
     eventID: string
@@ -36,41 +35,39 @@ const EventDetailComment = ({ eventID }: Props) => {
             </Segment>
 
             <Segment>
-                {userStore.currentUser?.role !== Roles.Admin && (
-                    <Segment clearing>
-                        <Formik
-                            onSubmit={(values, { resetForm }) => {
-                                commentStore.addComment(values).then(() => resetForm())
-                            }}
-                            initialValues={{
-                                content: '',
-                                eventID: eventID,
-                                userID: userStore.currentUser?.userID!
-                            }}
-                            validationSchema={Yup.object({
-                                content: Yup.string().required("")
-                            })}>
-                            {({ isSubmitting, isValid }) => (
-                                <Form className="ui form">
-                                    <TextAreaInput
-                                        placeholder="Your comment"
-                                        name='content'
-                                        rows={2} />
+                <Segment clearing>
+                    <Formik
+                        onSubmit={(values, { resetForm }) => {
+                            commentStore.addComment(values).then(() => resetForm())
+                        }}
+                        initialValues={{
+                            content: '',
+                            eventID: eventID,
+                            userID: userStore.currentUser?.userID!
+                        }}
+                        validationSchema={Yup.object({
+                            content: Yup.string().required("")
+                        })}>
+                        {({ isSubmitting, isValid }) => (
+                            <Form className="ui form">
+                                <TextAreaInput
+                                    placeholder="Your comment"
+                                    name='content'
+                                    rows={2} />
 
-                                    <Button
-                                        content='Add Comment'
-                                        labelPosition='left'
-                                        icon='edit'
-                                        primary
-                                        loading={isSubmitting}
-                                        disabled={isSubmitting || !isValid}
-                                        type="submit"
-                                        floated="right" />
-                                </Form>
-                            )}
-                        </Formik>
-                    </Segment>
-                )}
+                                <Button
+                                    content='Add Comment'
+                                    labelPosition='left'
+                                    icon='edit'
+                                    primary
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting || !isValid}
+                                    type="submit"
+                                    floated="right" />
+                            </Form>
+                        )}
+                    </Formik>
+                </Segment>
 
 
                 <Segment style={{ maxHeight: '600px', overflowY: 'auto' }}>

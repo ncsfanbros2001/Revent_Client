@@ -7,6 +7,7 @@ import ServerError from "../Components/Errors/ServerError";
 import ProfileDetails from "../Pages/ProfileDetails";
 import RequireAuth from "./RequireAuth";
 import Notifications from "../Pages/Notifications";
+import ReportList from "../Components/Admin/ReportList";
 
 export const routes: RouteObject[] = [
     {
@@ -18,6 +19,7 @@ export const routes: RouteObject[] = [
                     { path: '', element: <Newsfeed /> },
                     { path: 'details/:eventID', element: <EventDetails /> },
                     { path: 'profiles/:userID', element: <ProfileDetails /> },
+                    { path: 'reports', element: <ReportList /> },
                     { path: 'notFound', element: <NotFound /> },
                     { path: 'notifications', element: <Notifications /> },
                     { path: 'serverError', element: <ServerError /> },
